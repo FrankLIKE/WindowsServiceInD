@@ -17,11 +17,8 @@ import winsvc.svcbase;
 class MyService : ServiceBase
 {
 private:
-    shared
-    {
-        HANDLE _stopServiceEvent = null;
-        bool _stopping;
-    }
+    HANDLE _stopServiceEvent = null;
+    bool _stopping;
 
 public:
     this(string serviceName,
@@ -41,7 +38,7 @@ protected:
     {
         debug logIt("OnStart called");
         // do initialisation here
-        _stopServiceEvent = cast (shared(HANDLE)) CreateEvent(null, FALSE, FALSE, null);
+        _stopServiceEvent = CreateEvent(null, FALSE, FALSE, null);
         if (!_stopServiceEvent)
         {
             debug logIt("CreateEvent failed.");
@@ -71,14 +68,14 @@ protected:
         _stopping = true; //tell worker thread to stop
 
         //wait for signal
-        if (WaitForSingleObject(cast (HANDLE) _stopServiceEvent, INFINITE) != WAIT_OBJECT_0)
+        if (WaitForSingleObject(_stopServiceEvent, INFINITE) != WAIT_OBJECT_0)
         {
             auto err = GetLastError();
             throw new Exception("Error: %s", to!string(err));
         }
 
         // service was stopped signaled and SERVICE_STOP_PENDING set already - so clean up
-        CloseHandle(cast (HANDLE) _stopServiceEvent);
+        CloseHandle(_stopServiceEvent);
         _stopServiceEvent = null;
     }
 
@@ -120,4 +117,3 @@ private:
         }
     }
 }
-
