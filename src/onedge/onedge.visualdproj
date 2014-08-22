@@ -382,8 +382,8 @@
  </Config>
  <Folder name="onedge">
   <Folder name="winsvc">
-   <File path="installer.d" />
-   <File path="svcbase.d" />
+   <File path="winsvc\installer.d" />
+   <File path="winsvc\svcbase.d" />
   </Folder>
   <File path="main.d" />
   <File path="mysvc.d" />
