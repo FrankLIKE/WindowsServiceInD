@@ -1,18 +1,11 @@
 module mysvc;
+
 import std.stdio;
 import core.thread;
-import std.conv : to;
-import std.process : system;
-import std.stdio;
-import std.string;
-import win32.w32api;
 import win32.winbase;
-import win32.winerror;
 import win32.winnt;
-import win32.windef;
-import win32.winsvc;
-
 import winsvc.svcbase;
+
 
 class MyService : ServiceBase
 {
@@ -117,3 +110,4 @@ private:
         }
     }
 }
+
