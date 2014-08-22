@@ -41,8 +41,6 @@ abstract class ServiceBase
             SERVICE_TABLE_ENTRY(cast (char*) toStringz(_singleton._serviceName), &_singleton.ServiceMain),
             SERVICE_TABLE_ENTRY(null, null)
         ];
-
-        //debug logIt("RunService serviceTable.ptr ", serviceTable.ptr);
         StartServiceCtrlDispatcher(serviceTable.ptr);
     }
 
