@@ -1,0 +1,1 @@
+dmd -debug main.d  -I..\win32 -L+advapi32.lib
