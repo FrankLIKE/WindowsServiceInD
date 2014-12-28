@@ -8,12 +8,13 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.rpcdcep;
+version(Windows):
 
 private import win32.basetyps;
 private import win32.w32api;
 private import win32.windef;
 
-alias HANDLE I_RPC_HANDLE;
+mixin DECLARE_HANDLE!("I_RPC_HANDLE");
 alias long RPC_STATUS;
 
 const RPC_NCA_FLAGS_DEFAULT=0;
@@ -79,7 +80,7 @@ struct RPC_SERVER_INTERFACE {
 	uint                  RpcProtseqEndpointCount;
 	PRPC_PROTSEQ_ENDPOINT RpcProtseqEndpoint;
 	void*                 DefaultManagerEpv;
-	CPtr!(void)           InterpreterInfo;
+	const(void)*          InterpreterInfo;
 }
 alias RPC_SERVER_INTERFACE* PRPC_SERVER_INTERFACE;
 
@@ -91,7 +92,7 @@ struct RPC_CLIENT_INTERFACE {
 	uint                  RpcProtseqEndpointCount;
 	PRPC_PROTSEQ_ENDPOINT RpcProtseqEndpoint;
 	uint                  Reserved;
-	CPtr!(void)           InterpreterInfo;
+	const(void)*          InterpreterInfo;
 }
 alias RPC_CLIENT_INTERFACE* PRPC_CLIENT_INTERFACE;
 
@@ -122,33 +123,26 @@ extern (Windows) {
 	HANDLE I_RpcGetCurrentCallHandle();
 	int    I_RpcGetAssociationContext(void**);
 	int    I_RpcSetAssociationContext(void*);
-
-	static if (_WIN32_WINNT_ONLY) {
-		int I_RpcNsBindingSetEntryName(HANDLE, uint, wchar*);
-		int I_RpcBindingInqDynamicEndpoint(HANDLE, wchar**);
-	} else {
-		int I_RpcNsBindingSetEntryName(HANDLE, uint, char*);
-		int I_RpcBindingInqDynamicEndpoint(HANDLE, char**);
-	}
-
-	int   I_RpcBindingInqTransportType(HANDLE, uint*);
-	int   I_RpcIfInqTransferSyntaxes(HANDLE, RPC_TRANSFER_SYNTAX*, uint,
-	        uint*);
-	int   I_UuidCreate(GUID*);
-	int   I_RpcBindingCopy(HANDLE, HANDLE*);
-	int   I_RpcBindingIsClientLocal(HANDLE, uint*);
-	void  I_RpcSsDontSerializeContext();
-	int   I_RpcServerRegisterForwardFunction(int function (GUID*,
-	        RPC_VERSION*, GUID*, ubyte*, void**));
-	int   I_RpcConnectionInqSockBuffSize(uint*, uint*);
-	int   I_RpcConnectionSetSockBuffSize(uint, uint);
-	int   I_RpcBindingSetAsync(HANDLE, RPC_BLOCKING_FN);
-	int   I_RpcAsyncSendReceive(RPC_MESSAGE*, void*);
-	int   I_RpcGetThreadWindowHandle(void**);
-	int   I_RpcServerThreadPauseListening();
-	int   I_RpcServerThreadContinueListening();
-	int   I_RpcServerUnregisterEndpointA(ubyte*, ubyte*);
-	int   I_RpcServerUnregisterEndpointW(ushort*, ushort*);
+	int    I_RpcNsBindingSetEntryName(HANDLE, uint, wchar*);
+	int    I_RpcBindingInqDynamicEndpoint(HANDLE, wchar**);
+	int    I_RpcBindingInqTransportType(HANDLE, uint*);
+	int    I_RpcIfInqTransferSyntaxes(HANDLE, RPC_TRANSFER_SYNTAX*, uint,
+	         uint*);
+	int    I_UuidCreate(GUID*);
+	int    I_RpcBindingCopy(HANDLE, HANDLE*);
+	int    I_RpcBindingIsClientLocal(HANDLE, uint*);
+	void   I_RpcSsDontSerializeContext();
+	int    I_RpcServerRegisterForwardFunction(int function (GUID*,
+	         RPC_VERSION*, GUID*, ubyte*, void**));
+	int    I_RpcConnectionInqSockBuffSize(uint*, uint*);
+	int    I_RpcConnectionSetSockBuffSize(uint, uint);
+	int    I_RpcBindingSetAsync(HANDLE, RPC_BLOCKING_FN);
+	int    I_RpcAsyncSendReceive(RPC_MESSAGE*, void*);
+	int    I_RpcGetThreadWindowHandle(void**);
+	int    I_RpcServerThreadPauseListening();
+	int    I_RpcServerThreadContinueListening();
+	int    I_RpcServerUnregisterEndpointA(ubyte*, ubyte*);
+	int    I_RpcServerUnregisterEndpointW(ushort*, ushort*);
 }
 
 version(Unicode) {

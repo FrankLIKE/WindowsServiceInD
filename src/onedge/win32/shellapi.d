@@ -9,6 +9,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.shellapi;
+version(Windows):
 pragma(lib, "shell32");
 
 private import win32.w32api, win32.windef, win32.basetyps;
@@ -55,7 +56,7 @@ enum : DWORD {
 	ABM_WINDOWPOSCHANGED // = 9
 }
 
-static if (WINVER >= 0x501) {
+static if (_WIN32_WINNT >= 0x501) {
 	const DWORD ABM_SETSTATE = 10;
 }
 
@@ -116,17 +117,17 @@ const DWORD
 	NIS_SHAREDICON = 2;
 
 const HINSTANCE
-	SE_ERR_FNF             = cast(HANDLE)  2,
-	SE_ERR_PNF             = cast(HANDLE)  3,
-	SE_ERR_ACCESSDENIED    = cast(HANDLE)  5,
-	SE_ERR_OOM             = cast(HANDLE)  8,
-	SE_ERR_DLLNOTFOUND     = cast(HANDLE) 32,
-	SE_ERR_SHARE           = cast(HANDLE) 26,
-	SE_ERR_ASSOCINCOMPLETE = cast(HANDLE) 27,
-	SE_ERR_DDETIMEOUT      = cast(HANDLE) 28,
-	SE_ERR_DDEFAIL         = cast(HANDLE) 29,
-	SE_ERR_DDEBUSY         = cast(HANDLE) 30,
-	SE_ERR_NOASSOC         = cast(HANDLE) 31;
+	SE_ERR_FNF             = cast(HINSTANCE)  2,
+	SE_ERR_PNF             = cast(HINSTANCE)  3,
+	SE_ERR_ACCESSDENIED    = cast(HINSTANCE)  5,
+	SE_ERR_OOM             = cast(HINSTANCE)  8,
+	SE_ERR_DLLNOTFOUND     = cast(HINSTANCE) 32,
+	SE_ERR_SHARE           = cast(HINSTANCE) 26,
+	SE_ERR_ASSOCINCOMPLETE = cast(HINSTANCE) 27,
+	SE_ERR_DDETIMEOUT      = cast(HINSTANCE) 28,
+	SE_ERR_DDEFAIL         = cast(HINSTANCE) 29,
+	SE_ERR_DDEBUSY         = cast(HINSTANCE) 30,
+	SE_ERR_NOASSOC         = cast(HINSTANCE) 31;
 
 enum : UINT {
 	FO_MOVE = 1,
@@ -186,7 +187,7 @@ const SHERB_NOPROGRESSUI   = 2;
 const SHERB_NOSOUND        = 4;
 
 alias WORD FILEOP_FLAGS, PRINTEROP_FLAGS;
-alias HANDLE HDROP;
+mixin DECLARE_HANDLE!("HDROP");
 
 align(2):
 
@@ -332,7 +333,7 @@ struct SHFILEINFOW {
 	WCHAR[80]       szTypeName;
 }
 
-struct SHQUERYRBINFO {
+align(1) struct SHQUERYRBINFO {
 	DWORD cbSize = SHQUERYRBINFO.sizeof;
 	long  i64Size;
 	long  i64NumItems;

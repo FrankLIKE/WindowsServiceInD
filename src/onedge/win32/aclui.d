@@ -9,14 +9,15 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.aclui;
+version(Windows):
 pragma(lib, "aclui");
 
 private import win32.w32api;
-/*
-static assert (_WIN32_WINNT_ONLY && _WIN32_WINNT >= 0x500,
-	"win32.aclui is available only if version WindowsXP, Windows2003 "
-	"or WindowsVista is set, or both Windows2000 and WindowsNTonly are set");
-*/
+
+static assert (_WIN32_WINNT >= 0x500,
+	"win32.aclui is available only if version Windows2000, WindowsXP, Windows2003 "
+	"or WindowsVista is set");
+
 import win32.accctrl, win32.commctrl, win32.objbase;
 private import win32.basetyps, win32.prsht, win32.unknwn, win32.windef,
   win32.winuser;
@@ -61,10 +62,10 @@ const DWORD
 	                              | SI_EDIT_AUDITS;
 
 struct SI_ACCESS {
-	CPtr!(GUID) pguid;
-	ACCESS_MASK mask;
-	LPCWSTR     pszName;
-	DWORD       dwFlags;
+	const(GUID)* pguid;
+	ACCESS_MASK  mask;
+	LPCWSTR      pszName;
+	DWORD        dwFlags;
 }
 alias SI_ACCESS* PSI_ACCESS;
 
@@ -77,9 +78,9 @@ const DWORD
 
 
 struct SI_INHERIT_TYPE {
-	CPtr!(GUID) pguid;
-	ULONG       dwFlags;
-	LPCWSTR     pszName;
+	const(GUID)* pguid;
+	ULONG        dwFlags;
+	LPCWSTR      pszName;
 }
 alias SI_INHERIT_TYPE* PSI_INHERIT_TYPE;
 
@@ -100,8 +101,8 @@ interface ISecurityInformation : IUnknown {
 	HRESULT GetObjectInformation(PSI_OBJECT_INFO);
 	HRESULT GetSecurity(SECURITY_INFORMATION, PSECURITY_DESCRIPTOR*, BOOL);
 	HRESULT SetSecurity(SECURITY_INFORMATION, PSECURITY_DESCRIPTOR);
-	HRESULT GetAccessRights(CPtr!(GUID), DWORD, PSI_ACCESS*, ULONG*, ULONG*);
-	HRESULT MapGeneric(CPtr!(GUID), UCHAR*, ACCESS_MASK*);
+	HRESULT GetAccessRights(const(GUID)*, DWORD, PSI_ACCESS*, ULONG*, ULONG*);
+	HRESULT MapGeneric(const(GUID)*, UCHAR*, ACCESS_MASK*);
 	HRESULT GetInheritTypes(PSI_INHERIT_TYPE*, ULONG*);
 	HRESULT PropertySheetPageCallback(HWND, UINT, SI_PAGE_TYPE);
 }

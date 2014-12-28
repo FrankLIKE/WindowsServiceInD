@@ -8,6 +8,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.winspool;
+version(Windows):
 pragma(lib, "winspool");
 
 private import win32.w32api, win32.windef, win32.wingdi;
@@ -753,7 +754,7 @@ HANDLE FindFirstPrinterChangeNotification(HANDLE, DWORD, DWORD, PVOID);
 HANDLE FindNextPrinterChangeNotification(HANDLE, PDWORD, PVOID, PVOID*);
 BOOL FreePrinterNotifyInfo(PPRINTER_NOTIFY_INFO);
 
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 BOOL GetDefaultPrinterA(LPSTR, LPDWORD);
 BOOL GetDefaultPrinterW(LPWSTR, LPDWORD);
 }
@@ -847,7 +848,7 @@ alias EnumPrintersW EnumPrinters;
 alias EnumPrintProcessorDatatypesW EnumPrintProcessorDatatypes;
 alias EnumPrintProcessorsW EnumPrintProcessors;
 
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 alias GetDefaultPrinterW GetDefaultPrinter;
 }
 
@@ -919,7 +920,7 @@ alias EnumPrintersA EnumPrinters;
 alias EnumPrintProcessorDatatypesA EnumPrintProcessorDatatypes;
 alias EnumPrintProcessorsA EnumPrintProcessors;
 
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 alias GetDefaultPrinterA GetDefaultPrinter;
 }
 

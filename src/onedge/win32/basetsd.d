@@ -9,18 +9,20 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.basetsd;
+version(Windows):
 
 /*	This template is used in these modules to declare constant pointer types,
  *	in order to support both D 1.x and 2.x.
+ *	Since removed - now supporting only D2
  */
-template CPtr(T) {
+/*template CPtr(T) {
 	version (D_Version2) {
 		// must use mixin so that it doesn't cause a syntax error under D1
 		mixin("alias const(T)* CPtr;");
 	} else {
 		alias T* CPtr;
 	}
-}
+}*/
 
 /*	[CyberShadow VP 2011.12.22] typedef is now deprecated in D2.
  */
@@ -37,12 +39,15 @@ template TypeDef(T) {
 // 'forwatd template reference' to CPtr from winnt.d caused by a circular
 // import.
 
+alias TypeDef!(void*) HANDLE;
+/+struct HANDLE {
+    const(void)* h;
+    alias h this;
+}+/
+
 package template DECLARE_HANDLE(string name, base = HANDLE) {
     mixin ("alias " ~ base.stringof ~ " " ~ name ~ ";");
 }
-
-alias TypeDef!(void*) HANDLE;
-
 alias HANDLE* PHANDLE, LPHANDLE;
 
 version (Win64) {
@@ -88,12 +93,12 @@ version (Win64) {
 
 	uint HandleToUlong(HANDLE h)      { return cast(uint) h; }
 	int HandleToLong(HANDLE h)        { return cast(int) h; }
-	HANDLE LongToHandle(LONG_PTR h)   { return cast(HANDLE) h; }
-	uint PtrToUlong(CPtr!(void) p)    { return cast(uint) p; }
-	uint PtrToUint(CPtr!(void) p)     { return cast(uint) p; }
-	int PtrToInt(CPtr!(void) p)       { return cast(int) p; }
-	ushort PtrToUshort(CPtr!(void) p) { return cast(ushort) p; }
-	short PtrToShort(CPtr!(void) p)   { return cast(short) p; }
+	HANDLE LongToHandle(LONG_PTR h)   { return cast(HANDLE)h; }
+	uint PtrToUlong(const(void)* p)    { return cast(uint) p; }
+	uint PtrToUint(const(void)* p)     { return cast(uint) p; }
+	int PtrToInt(const(void)* p)       { return cast(int) p; }
+	ushort PtrToUshort(const(void)* p) { return cast(ushort) p; }
+	short PtrToShort(const(void)* p)   { return cast(short) p; }
 	void* IntToPtr(int i)             { return cast(void*) i; }
 	void* UIntToPtr(uint ui)          { return cast(void*) ui; }
 	alias IntToPtr LongToPtr;

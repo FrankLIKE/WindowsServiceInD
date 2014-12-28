@@ -9,6 +9,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.ntdef;
+version(Windows):
 
 private import win32.basetsd, win32.subauth, win32.windef, win32.winnt;
 
@@ -47,8 +48,8 @@ struct UNICODE_STRING {
 	USHORT MaximumLength;
 	PWSTR  Buffer;
 }
-alias UNICODE_STRING*       PUNICODE_STRING;
-alias CPtr!(UNICODE_STRING) PCUNICODE_STRING;
+alias UNICODE_STRING*        PUNICODE_STRING;
+alias const(UNICODE_STRING)* PCUNICODE_STRING;
 
 struct STRING {
 	USHORT Length;

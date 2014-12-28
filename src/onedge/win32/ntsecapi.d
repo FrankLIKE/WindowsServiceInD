@@ -9,6 +9,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.ntsecapi;
+version(Windows):
 
 private import
   win32.basetyps, win32.ntdef, win32.windef, win32.winnt, win32.w32api;
@@ -406,7 +407,7 @@ struct MSV1_0_LM20_LOGON {
 }
 alias MSV1_0_LM20_LOGON* PMSV1_0_LM20_LOGON;
 
-static if (_WIN32_WINNT_ONLY && _WIN32_WINNT >= 0x500) {
+static if (_WIN32_WINNT >= 0x500) {
 	struct MSV1_0_SUBAUTH_LOGON {
 		MSV1_0_LOGON_SUBMIT_TYPE       MessageType;
 		UNICODE_STRING                 LogonDomainName;
@@ -663,8 +664,8 @@ struct POLICY_DOMAIN_KERBEROS_TICKET_INFO {
 }
 alias POLICY_DOMAIN_KERBEROS_TICKET_INFO* PPOLICY_DOMAIN_KERBEROS_TICKET_INFO;
 
-alias HANDLE LSA_HANDLE;
-alias HANDLE* PLSA_HANDLE;
+mixin DECLARE_HANDLE!("LSA_HANDLE");
+alias LSA_HANDLE* PLSA_HANDLE;
 
 struct TRUSTED_DOMAIN_NAME_INFO {
 	LSA_UNICODE_STRING Name;

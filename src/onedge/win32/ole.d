@@ -9,6 +9,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.ole;
+version(Windows):
 
 private import win32.windef, win32.wingdi, win32.uuid;
 
@@ -154,7 +155,7 @@ enum OLEOPT_UPDATE {
 // #endif
 }
 
-alias HANDLE HOBJECT;
+mixin DECLARE_HANDLE!("HOBJECT");
 alias LONG LHSERVER, LHCLIENTDOC, LHSERVERDOC;
 
 struct OLEOBJECTVTBL {
@@ -288,7 +289,7 @@ extern (Windows) {
 	OLESTATUS OleSetHostNames(LPOLEOBJECT, LPCSTR, LPCSTR);
 	OLESTATUS OleSetTargetDevice(LPOLEOBJECT, HGLOBAL);
 	OLESTATUS OleSetBounds(LPOLEOBJECT, LPCRECT);
-	OLESTATUS OleSetColorScheme(LPOLEOBJECT, CPtr!(LOGPALETTE));
+	OLESTATUS OleSetColorScheme(LPOLEOBJECT, const(LOGPALETTE)*);
 	OLESTATUS OleQueryBounds(LPOLEOBJECT, RECT*);
 	OLESTATUS OleQuerySize(LPOLEOBJECT, DWORD*);
 	OLESTATUS OleDraw(LPOLEOBJECT, HDC, LPCRECT, LPCRECT, HDC);

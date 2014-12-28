@@ -9,12 +9,13 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.reason;
+version(Windows):
 
 private import win32.w32api, win32.windef;
-/*
+
 static assert (_WIN32_WINNT >= 0x501,
   "win32.reason is only available on WindowsXP and later");
-*/
+
 
 enum : DWORD {
 	SHTDN_REASON_MAJOR_OTHER           = 0x00000000,

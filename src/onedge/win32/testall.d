@@ -1,5 +1,6 @@
 // Used only for testing -- imports all windows headers.
 module win32.testall;
+version(Windows):
 
 import win32.core;
 import win32.windows;
@@ -107,24 +108,16 @@ version (WindowsVista) {
 }
 
 version (WINDOWS_XP_UP) {
-	import win32.aclapi;
-	import win32.aclui;
-	import win32.dhcpcsdk;
 	import win32.errorrep;
 	import win32.lmmsg;
-	import win32.lmserver;
 	import win32.reason;
 	import win32.secext;
-	import win32.ntdll;
-} else version (WindowsNTonly) {
-	version (Windows2000) {
-		import win32.aclapi;
-		import win32.aclui;
-		import win32.dhcpcsdk;
-	}
-	import win32.lmserver;
-	import win32.ntdll;
 }
+import win32.aclapi;
+import win32.aclui;
+import win32.dhcpcsdk;
+import win32.lmserver;
+import win32.ntdll;
 
 version (Win32_Winsock1) {
 	import win32.winsock;

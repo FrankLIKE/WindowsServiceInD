@@ -9,6 +9,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.dbt;
+version(Windows):
 
 import win32.w32api, win32.windef;
 import win32.basetyps; // for GUID
@@ -25,17 +26,12 @@ enum : DWORD {
 	DBT_DEVICEREMOVECOMPLETE    = 0x8004,
 	DBT_DEVICETYPESPECIFIC      = 0x8005,
 	DBT_DEVTYP_OEM              = 0,
-	DBT_DEVTYP_DEVNODE          = 1,
-	DBT_DEVTYP_VOLUME           = 2,
-	DBT_DEVTYP_PORT             = 3,
-	DBT_DEVTYP_NET              = 4
-}
-
-static if (_WIN32_WINDOWS >= 0x040A) {
-	enum : DWORD {
-		DBT_DEVTYP_DEVICEINTERFACE = 5,
-		DBT_DEVTYP_HANDLE          = 6
-	}
+	DBT_DEVTYP_DEVNODE,
+	DBT_DEVTYP_VOLUME,
+	DBT_DEVTYP_PORT,
+	DBT_DEVTYP_NET,
+	DBT_DEVTYP_DEVICEINTERFACE,
+	DBT_DEVTYP_HANDLE        // = 6
 }
 
 enum : DWORD {
@@ -81,14 +77,14 @@ enum : DWORD {
 	BSF_MSGSRV32ISOK       = 0x80000000
 }
 
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 	enum : DWORD {
 		BSF_ALLOWSFW          = 0x00000080,
 		BSF_SENDNOTIFYMESSAGE = 0x00000100
 	}
 }
 
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 	enum : DWORD {
 		BSF_LUID        = 0x00000400,
 		BSF_RETURNHDESK = 0x00000200
@@ -151,7 +147,7 @@ version (Unicode) {
 }
 alias DEV_BROADCAST_PORT* PDEV_BROADCAST_PORT;
 
-static if ((_WIN32_WINDOWS >= 0x0410) || (_WIN32_WINNT >= 0x0500)) {
+static if (_WIN32_WINNT >= 0x500) {
 	struct DEV_BROADCAST_DEVICEINTERFACE_A {
 		DWORD dbcc_size = DEV_BROADCAST_DEVICEINTERFACE_A.sizeof;
 		DWORD dbcc_devicetype;

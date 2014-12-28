@@ -8,6 +8,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.commctrl;
+version(Windows):
 pragma(lib, "comctl32");
 
 private import win32.w32api, win32.windef, win32.winuser;
@@ -290,7 +291,7 @@ static if (_WIN32_IE >= 0x500) {
     }
 }
 
-static if (_WIN32_WINNT >= 0x0501)
+static if (_WIN32_WINNT >= 0x501)
 {
     enum {
         BCN_FIRST = -1250U,
@@ -403,7 +404,7 @@ static if (_WIN32_IE >= 0x400) {
 		HDM_SETUNICODEFORMAT = CCM_SETUNICODEFORMAT
 	}
 }
-static if (_WIN32_IE >= 0x0500) {
+static if (_WIN32_IE >= 0x500) {
 	enum {
 		HDM_SETBITMAPMARGIN = HDM_FIRST + 20,
 		HDM_GETBITMAPMARGIN = HDM_FIRST + 21,
@@ -412,7 +413,7 @@ static if (_WIN32_IE >= 0x0500) {
         HDM_CLEARFILTER = HDM_FIRST + 24,
     }
 }
-static if (_WIN32_IE >= 0x0600) {
+static if (_WIN32_IE >= 0x600) {
 	enum {
         HDM_GETITEMDROPDOWNRECT = HDM_FIRST + 25,
         HDM_GETOVERFLOWRECT = HDM_FIRST + 26,
@@ -944,7 +945,7 @@ static if (_WIN32_IE >= 0x400) {  // IE4.0 ???
 		TTM_SETTITLEA,
 		TTM_SETTITLEW // = WM_USER + 33
 	}
-    static if (_WIN32_IE >= 0x0500)
+    static if (_WIN32_IE >= 0x500)
     {
         alias TTM_SETTITLEW TTM_SETTITLE;
     }
@@ -954,7 +955,7 @@ static if (_WIN32_IE >= 0x400) {  // IE4.0 ???
     }
 }
 
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
     enum {
         TTM_POPUP = (WM_USER + 34),
         TTM_GETTITLE = (WM_USER + 35),
@@ -1741,7 +1742,8 @@ enum {
 	I_CHILDRENCALLBACK = -1
 }
 
-alias HANDLE HTREEITEM;
+mixin DECLARE_HANDLE!("HTREEITEM");
+mixin DECLARE_HANDLE!("HIMAGELIST");
 
 version(Win64)
 {
@@ -2589,7 +2591,7 @@ static if (_WIN32_WINNT >= 0x501) {
     alias NMBCHOTITEM* LPNMBCHOTITEM;
 }
 
-static if(_WIN32_WINNT >= 0x0600) {
+static if(_WIN32_WINNT >= 0x600) {
     enum {
         BST_DROPDOWNPUSHED      = 0x0400,
 
@@ -2660,7 +2662,7 @@ enum {
 	CBEM_GETITEMW       = WM_USER + 13
 }
 
-static if (_WIN32_WINNT >= 0x0501)
+static if (_WIN32_WINNT >= 0x501)
 {
     enum {
         CBEM_SETWINDOWTHEME = CCM_SETWINDOWTHEME
@@ -2708,7 +2710,7 @@ static if (_WIN32_IE >= 0x400) {
 	}
 }
 
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 	enum {
 		LIF_ITEMINDEX = 1,
 		LIF_STATE     = 2,
@@ -2747,7 +2749,7 @@ struct TBMETRICS {
 }
 alias TBMETRICS* LPTBMETRICS;
 
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
     struct TTGETTITLE {
         DWORD dwSize = TTGETTITLE.sizeof;
         UINT  uTitleBitmap;
@@ -2757,7 +2759,7 @@ static if (_WIN32_WINNT >= 0x0501) {
     alias TTGETTITLE* PTTGETTITLE;
 }
 
-static if (_WIN32_WINNT >= 0x0600) {
+static if (_WIN32_WINNT >= 0x600) {
     struct MCGRIDINFO {
         UINT cbSize;
         DWORD dwPart;
@@ -2799,8 +2801,8 @@ struct COMBOBOXEXITEMA {
 	int    iIndent;
 	LPARAM lParam;
 }
-alias COMBOBOXEXITEMA*       PCOMBOBOXEXITEMA;
-alias CPtr!(COMBOBOXEXITEMA) PCCOMBOEXITEMA;
+alias COMBOBOXEXITEMA*        PCOMBOBOXEXITEMA;
+alias const(COMBOBOXEXITEMA)* PCCOMBOEXITEMA;
 
 struct COMBOBOXEXITEMW {
 	UINT   mask;
@@ -2813,8 +2815,8 @@ struct COMBOBOXEXITEMW {
 	int    iIndent;
 	LPARAM lParam;
 }
-alias COMBOBOXEXITEMW*       PCOMBOBOXEXITEMW;
-alias CPtr!(COMBOBOXEXITEMW) PCCOMBOEXITEMW;
+alias COMBOBOXEXITEMW*        PCOMBOBOXEXITEMW;
+alias const(COMBOBOXEXITEMW)* PCCOMBOEXITEMW;
 
 static if (_WIN32_IE >= 0x400) {
 	struct NMCOMBOBOXEXA {
@@ -2997,11 +2999,11 @@ struct TBBUTTON {
 	} else {
 		BYTE  bReserved[2];
 	}
-	DWORD dwData;
+	DWORD_PTR dwData;
 	INT_PTR iString;
 }
-alias TBBUTTON*       PTBBUTTON, LPTBBUTTON;
-alias CPtr!(TBBUTTON) LPCTBBUTTON;
+alias TBBUTTON*        PTBBUTTON, LPTBBUTTON;
+alias const(TBBUTTON)* LPCTBBUTTON;
 
 static if (_WIN32_IE >= 0x400) {
 	struct TBBUTTONINFOA {
@@ -3012,7 +3014,7 @@ static if (_WIN32_IE >= 0x400) {
 		BYTE  fsState;
 		BYTE  fsStyle;
 		WORD  cx;
-		DWORD lParam;
+		DWORD_PTR lParam;
 		LPSTR pszText;
 		int   cchText;
 	}
@@ -3026,7 +3028,7 @@ static if (_WIN32_IE >= 0x400) {
 		BYTE   fsState;
 		BYTE   fsStyle;
 		WORD   cx;
-		DWORD  lParam;
+		DWORD_PTR lParam;
 		LPWSTR pszText;
 		int    cchText;
 	}
@@ -3083,8 +3085,6 @@ struct IMAGEINFO {
 	RECT    rcImage;
 }
 alias IMAGEINFO* LPIMAGEINFO;
-
-alias HANDLE HIMAGELIST;
 
 static if (_WIN32_IE >= 0x500) {
 	struct HDITEMA {
@@ -4078,7 +4078,7 @@ struct TVHITTESTINFO {
 alias TVHITTESTINFO* LPTVHITTESTINFO, LPTV_HITTESTINFO;
 alias TVHITTESTINFO TV_HITTESTINFO;
 
-static if (_WIN32_WINNT >= 0x0600) {
+static if (_WIN32_WINNT >= 0x600) {
     struct TVGETITEMPARTRECTINFO {
         HTREEITEM hti;
         RECT*     prc;
@@ -4370,10 +4370,10 @@ static if (_WIN32_IE >= 0x400) {
 		REBARBANDINFOW_V3_SIZE = REBARBANDINFOW.sizeof
 	}
 }
-alias REBARBANDINFOA*       LPREBARBANDINFOA;
-alias CPtr!(REBARBANDINFOA) LPCREBARBANDINFOA;
-alias REBARBANDINFOW*       LPREBARBANDINFOW;
-alias CPtr!(REBARBANDINFOW) LPCREBARBANDINFOW;
+alias REBARBANDINFOA*        LPREBARBANDINFOA;
+alias const(REBARBANDINFOA)* LPCREBARBANDINFOA;
+alias REBARBANDINFOW*        LPREBARBANDINFOW;
+alias const(REBARBANDINFOW)* LPCREBARBANDINFOW;
 
 static if (_WIN32_IE >= 0x300) {
 	struct NMLVODSTATECHANGE {
@@ -4474,8 +4474,8 @@ static if (_WIN32_IE >= 0x400) {
 	alias RBHITTESTINFO* LPRBHITTESTINFO;
 }
 
-alias HANDLE HDSA;
-alias HANDLE HDPA;
+mixin DECLARE_HANDLE!("HDSA");
+mixin DECLARE_HANDLE!("HDPA");
 
 version (Unicode) {
 	alias HDITEMW HDITEM;
@@ -5067,7 +5067,7 @@ int Header_GetItemCount(HWND w) {
 	return cast(int) SendMessage(w, HDM_GETITEMCOUNT, 0, 0);
 }
 
-int Header_InsertItem(HWND w, int i, CPtr!(HDITEM) phdi) {
+int Header_InsertItem(HWND w, int i, const(HDITEM)* phdi) {
 	return cast(int) SendMessage(w, HDM_INSERTITEM, i, cast(LPARAM) phdi);
 }
 
@@ -5079,7 +5079,7 @@ BOOL Header_GetItem(HWND w, int i, LPHDITEM phdi) {
 	return cast(BOOL) SendMessage(w, HDM_GETITEM, i, cast(LPARAM) phdi);
 }
 
-BOOL Header_SetItem(HWND w, int i, CPtr!(HDITEM) phdi) {
+BOOL Header_SetItem(HWND w, int i, const(HDITEM)* phdi) {
 	return cast(BOOL) SendMessage(w, HDM_SETITEM, i, cast(LPARAM) phdi);
 }
 
@@ -5271,11 +5271,11 @@ HIMAGELIST ListView_SetImageList(HWND w, HIMAGELIST h, int i) {
 	  cast(LPARAM) h);
 }
 
-BOOL ListView_SetItem(HWND w, CPtr!(LV_ITEM) i) {
+BOOL ListView_SetItem(HWND w, const(LV_ITEM)* i) {
 	return cast(BOOL) SendMessage(w, LVM_SETITEM, 0, cast(LPARAM) i);
 }
 
-int ListView_InsertItem(HWND w, CPtr!(LV_ITEM) i) {
+int ListView_InsertItem(HWND w, const(LV_ITEM)* i) {
 	return cast(int) SendMessage(w, LVM_INSERTITEM, 0, cast(LPARAM) i);
 }
 
@@ -5299,7 +5299,7 @@ int ListView_GetNextItem(HWND w, int i, UINT f) {
 	return cast(int) SendMessage(w, LVM_GETNEXTITEM, i, MAKELPARAM(cast(ushort)f, 0));
 }
 
-int ListView_FindItem(HWND w, int i, CPtr!(LV_FINDINFO) p) {
+int ListView_FindItem(HWND w, int i, const(LV_FINDINFO)* p) {
 	return cast(int) SendMessage(w, LVM_FINDITEM, i, cast(LPARAM) p);
 }
 
@@ -5356,11 +5356,11 @@ BOOL ListView_GetColumn(HWND w, int i, LPLVCOLUMN p) {
 	return cast(BOOL) SendMessage(w, LVM_GETCOLUMN, i, cast(LPARAM) p);
 }
 
-BOOL ListView_SetColumn(HWND w, int i, CPtr!(LV_COLUMN) p) {
+BOOL ListView_SetColumn(HWND w, int i, const(LV_COLUMN)* p) {
 	return cast(BOOL) SendMessage(w, LVM_SETCOLUMN, i, cast(LPARAM) p);
 }
 
-int ListView_InsertColumn(HWND w, int i, CPtr!(LV_COLUMN) p) {
+int ListView_InsertColumn(HWND w, int i, const(LV_COLUMN)* p) {
 	return cast(int) SendMessage(w, LVM_INSERTCOLUMN, i, cast(LPARAM) p);
 }
 
@@ -5484,7 +5484,7 @@ int ListView_EnableGroupView(HWND w, BOOL i) {
 	return cast(int) SendMessage(w, LVM_ENABLEGROUPVIEW, i, 0);
 }
 
-static if (_WIN32_WINDOWS >= 0x410 && (_WIN32_WINNT >= 0x500 || _WIN32_IE >= 0x500)) {
+static if (_WIN32_WINNT >= 0x500 || _WIN32_IE >= 0x500) {
 	BOOL ListView_SortItemsEx(HWND w, PFNLVCOMPARE c, LPARAM p) {
 		return cast(BOOL) SendMessage(w, LVM_SORTITEMSEX, cast(WPARAM) p, cast(LPARAM)c);
 	}
@@ -5755,7 +5755,7 @@ BOOL TabCtrl_SetItem(HWND w, int i, LPTCITEM p) {
 	return cast(BOOL) SendMessage(w, TCM_SETITEM, i, cast(LPARAM) p);
 }
 
-int TabCtrl_InsertItem(HWND w, int i, CPtr!(TC_ITEM) p) {
+int TabCtrl_InsertItem(HWND w, int i, const(TC_ITEM)* p) {
 	return cast(int) SendMessage(w, TCM_INSERTITEM, i, cast(LPARAM) p);
 }
 
@@ -5944,7 +5944,7 @@ BOOL TreeView_GetItem(HWND w, LPTVITEM i) {
  return cast(BOOL) SendMessage(w, TVM_GETITEM, 0, cast(LPARAM) i);
 }
 
-BOOL TreeView_SetItem(HWND w, CPtr!(TV_ITEM) i) {
+BOOL TreeView_SetItem(HWND w, const(TV_ITEM)* i) {
 	return cast(BOOL) SendMessage(w, TVM_SETITEM, 0, cast(LPARAM) i);
 }
 
@@ -6262,7 +6262,7 @@ alias DestroyWindow CommandBar_Destroy;
 //#endif // _WIN32_WCE
 
 
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
     struct EDITBALLOONTIP
     {
         DWORD cbStruct;
@@ -6272,13 +6272,13 @@ static if (_WIN32_WINNT >= 0x0501) {
     }
     alias EDITBALLOONTIP* PEDITBALLOONTIP;
 
-const EM_SETCUEBANNER = ECM_FIRST + 1;
-const EM_GETCUEBANNER = ECM_FIRST + 2;
-const EM_SHOWBALLOONTIP = ECM_FIRST + 3;
-const EM_HIDEBALLOONTIP = ECM_FIRST + 4;
+	const EM_SETCUEBANNER = ECM_FIRST + 1;
+	const EM_GETCUEBANNER = ECM_FIRST + 2;
+	const EM_SHOWBALLOONTIP = ECM_FIRST + 3;
+	const EM_HIDEBALLOONTIP = ECM_FIRST + 4;
 }
 
-static if (_WIN32_WINNT >= 0x0600) {
-const EM_SETHILITE = ECM_FIRST + 5;
-const EM_GETHILITE = ECM_FIRST + 6;
+static if (_WIN32_WINNT >= 0x600) {
+	const EM_SETHILITE = ECM_FIRST + 5;
+	const EM_GETHILITE = ECM_FIRST + 6;
 }

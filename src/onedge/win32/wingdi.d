@@ -8,6 +8,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.wingdi;
+version(Windows):
 pragma(lib, "gdi32");
 
 // FIXME: clean up Windows version support
@@ -198,12 +199,11 @@ enum : DWORD {
 
 const EMR_MIN = EMR_HEADER;
 
-static if (WINVER >= 0x0500)
+static if (_WIN32_WINNT >= 0x500) {
 	const EMR_MAX = EMR_CREATECOLORSPACEW;
-else static if (WINVER >= 0x0400)
+} else {
 	const EMR_MAX = EMR_PIXELFORMAT;
-else
-	const EMR_MAX = EMR_POLYTEXTOUTW;
+}
 
 // ENHMETAHEADER.dSignature, ENHMETAHEADER3.dSignature,
 // EMRFORMAT.dSignature
@@ -212,7 +212,7 @@ enum : DWORD {
 	EPS_SIGNATURE     = 0x46535045
 }
 
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 	// AddFontResourceEx()
 	enum : DWORD {
 		FR_PRIVATE  = 0x10,
@@ -353,7 +353,7 @@ const DWORD
 	PATCOPY     = 0xF00021,
 	PATPAINT    = 0xFB0A09,
 	WHITENESS   = 0xFF0062;
-static if (WINVER >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 	const DWORD
 		NOMIRRORBITMAP = 0x80000000,
 		CAPTUREBLT     = 0x40000000;
@@ -802,7 +802,7 @@ enum : WORD {
 	DC_MODEL,
 }
 
-static if (WINVER >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 	enum {
 		DC_PERSONALITY = 25,
 		DC_PRINTRATE = 26,
@@ -832,18 +832,16 @@ const DWORD
 	DCTT_SUBDEV           = 4,
 	DCTT_DOWNLOAD_OUTLINE = 8;
 
-static if (WINVER >= 0x0400) {
-	// return from DC_BINADJUST
-	enum : DWORD {
-		DCBA_FACEUPNONE     = 0x0000,
-		DCBA_FACEUPCENTER   = 0x0001,
-		DCBA_FACEUPLEFT     = 0x0002,
-		DCBA_FACEUPRIGHT    = 0x0003,
-		DCBA_FACEDOWNNONE   = 0x0100,
-		DCBA_FACEDOWNCENTER = 0x0101,
-		DCBA_FACEDOWNLEFT   = 0x0102,
-		DCBA_FACEDOWNRIGHT  = 0x0103,
-	}
+// return from DC_BINADJUST
+enum : DWORD {
+	DCBA_FACEUPNONE     = 0x0000,
+	DCBA_FACEUPCENTER   = 0x0001,
+	DCBA_FACEUPLEFT     = 0x0002,
+	DCBA_FACEUPRIGHT    = 0x0003,
+	DCBA_FACEDOWNNONE   = 0x0100,
+	DCBA_FACEDOWNCENTER = 0x0101,
+	DCBA_FACEDOWNLEFT   = 0x0102,
+	DCBA_FACEDOWNRIGHT  = 0x0103,
 }
 //---
 
@@ -859,7 +857,7 @@ const UINT
 	ETO_NUMERICSLOCAL  = 0x0400,
 	ETO_NUMERICSLATIN  = 0x0800,
 	ETO_IGNORELANGUAGE = 0x1000;
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 	const UINT
 		ETO_PDY = 0x2000;
 }
@@ -973,7 +971,7 @@ enum : int {
 	DESKTOPHORZRES  = 118,
 	BLTALIGNMENT    = 119
 }
-static if (WINVER >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 enum : int {
 	SHADEBLENDCAPS  = 120,
 	COLORMGMTCAPS   = 121,
@@ -1011,7 +1009,7 @@ const int
 	RC_OP_DX_OUTPUT = 0x4000,
 	RC_DEVBITS      = 0x8000;
 
-static if (WINVER >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 	/* Shading and blending caps */
 	const SB_NONE = 0x00000000;
 	const SB_CONST_ALPHA = 0x00000001;
@@ -1194,27 +1192,19 @@ enum : int {
 	DEVICE_DEFAULT_FONT,
 	DEFAULT_PALETTE,
 	SYSTEM_FIXED_FONT,
+	DEFAULT_GUI_FONT = SYSTEM_FIXED_FONT + 1,
 }
-static if (WINVER >= 0x0400) {
-	enum : int {
-		DEFAULT_GUI_FONT = SYSTEM_FIXED_FONT + 1,
-	}
-}
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 	enum : int {
 		DC_BRUSH = DEFAULT_GUI_FONT + 1,
 		DC_PEN,
 	}
 }
 
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 	const STOCK_LAST = DC_PEN;
-}
-else static if (WINVER >= 0x0400) {
+} else {
 	const STOCK_LAST = DEFAULT_GUI_FONT;
-}
-else {
-	const STOCK_LAST = SYSTEM_FIXED_FONT;
 }
 
 // Get/SetSystemPaletteUse()
@@ -1504,15 +1494,7 @@ const CCHFORMNAME   = 32;
 
 // DEVMODE.dmSpecVersion
 // current version of specification
-static if (WINVER >= 0x0500 || _WIN32_WINNT >= 0x0400) {
-	const WORD DM_SPECVERSION = 0x0401;
-}
-else static if (WINVER >= 0x0400) {
-	const WORD DM_SPECVERSION = 0x0400;
-}
-else {
-	const WORD DM_SPECVERSION = 0x0320;
-}
+const WORD DM_SPECVERSION = 0x0401;
 
 // DEVMODE.dmOrientation
 enum : short {
@@ -1591,7 +1573,7 @@ enum : short {
 	DMPAPER_A3_TRANSVERSE,
 	DMPAPER_A3_EXTRA_TRANSVERSE // = 68
 }
-static if (WINVER >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 	enum : short {
 		DMPAPER_DBL_JAPANESE_POSTCARD = 69,
 		DMPAPER_A6,
@@ -1648,10 +1630,11 @@ static if (WINVER >= 0x0500) {
 
 const short DMPAPER_FIRST = DMPAPER_LETTER;
 
-static if (WINVER >= 0x0500)
+static if (_WIN32_WINNT >= 0x500) {
 	const short DMPAPER_LAST = DMPAPER_PENV_10_ROTATED;
-else
+} else {
 	const short DMPAPER_LAST = DMPAPER_A3_EXTRA_TRANSVERSE;
+}
 
 const short DMPAPER_USER = 256;
 
@@ -1714,7 +1697,7 @@ enum : short {
 	DMCOLLATE_TRUE
 }
 
-static if (WINVER >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 	/* DEVMODE dmDisplayOrientation specifiations */
 	enum : short {
 		DMDO_DEFAULT = 0,
@@ -1753,12 +1736,12 @@ const DWORD
 	DM_PAPERLENGTH        = 0x00000004,
 	DM_PAPERWIDTH         = 0x00000008,
 	DM_SCALE              = 0x00000010;
-static if (WINVER >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 	const DWORD
 		DM_POSITION       = 0x00000020,
 		DM_NUP            = 0x00000040;
 }
-static if (WINVER >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 	const DWORD
 		DM_DISPLAYORIENTATION = 0x00000080;
 }
@@ -1777,17 +1760,14 @@ const DWORD
 	DM_PELSWIDTH          = 0x00080000,
 	DM_PELSHEIGHT         = 0x00100000,
 	DM_DISPLAYFLAGS       = 0x00200000,
-	DM_DISPLAYFREQUENCY   = 0x00400000;
-static if (WINVER >= 0x0400) {
-	const DWORD
-		DM_ICMMETHOD      = 0x00800000,
-		DM_ICMINTENT      = 0x01000000,
-		DM_MEDIATYPE      = 0x02000000,
-		DM_DITHERTYPE     = 0x04000000,
-		DM_PANNINGWIDTH   = 0x08000000,
-		DM_PANNINGHEIGHT  = 0x10000000;
-}
-static if (WINVER >= 0x0501) {
+	DM_DISPLAYFREQUENCY   = 0x00400000,
+	DM_ICMMETHOD          = 0x00800000,
+	DM_ICMINTENT          = 0x01000000,
+	DM_MEDIATYPE          = 0x02000000,
+	DM_DITHERTYPE         = 0x04000000,
+	DM_PANNINGWIDTH       = 0x08000000,
+	DM_PANNINGHEIGHT      = 0x10000000;
+static if (_WIN32_WINNT >= 0x501) {
 	const DWORD
 		DM_DISPLAYFIXEDOUTPUT = 0x20000000;
 }
@@ -1953,12 +1933,11 @@ const LAYOUT_BTT = 2;
 const LAYOUT_VBH = 4;
 const LAYOUT_BITMAPORIENTATIONPRESERVED = 8;
 
-static if (WINVER > 0x0400) {
-	const CS_ENABLE = 0x00000001;
-	const CS_DISABLE = 0x00000002;
-	const CS_DELETE_TRANSFORM = 0x00000003;
-}
-static if (WINVER > 0x0500) {
+const CS_ENABLE = 0x00000001;
+const CS_DISABLE = 0x00000002;
+const CS_DELETE_TRANSFORM = 0x00000003;
+
+static if (_WIN32_WINNT > 0x500) {
 	const GRADIENT_FILL_RECT_H=0x00;
 	const GRADIENT_FILL_RECT_V=0x01;
 	const GRADIENT_FILL_TRIANGLE=0x02;
@@ -1985,7 +1964,7 @@ const DWORD
 	DISPLAY_DEVICE_ACTIVE = 0x00000001,
 	DISPLAY_DEVICE_ATTACHED = 0x00000002;
 
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 	const GGI_MARK_NONEXISTING_GLYPHS = 1;
 }
 
@@ -2220,18 +2199,14 @@ struct DEVMODEA {
 		DWORD  dmNup;
 	}
 	DWORD  dmDisplayFrequency;
-	static if (WINVER >= 0x0400) {
-		DWORD  dmICMMethod;
-		DWORD  dmICMIntent;
-		DWORD  dmMediaType;
-		DWORD  dmDitherType;
-		DWORD  dmReserved1;
-		DWORD  dmReserved2;
-		static if ((WINVER >= 0x0500) || (_WIN32_WINNT >= 0x0400)) {
-			DWORD  dmPanningWidth;
-			DWORD  dmPanningHeight;
-		}
-	}
+	DWORD  dmICMMethod;
+	DWORD  dmICMIntent;
+	DWORD  dmMediaType;
+	DWORD  dmDitherType;
+	DWORD  dmReserved1;
+	DWORD  dmReserved2;
+	DWORD  dmPanningWidth;
+	DWORD  dmPanningHeight;
 }
 alias DEVMODEA* PDEVMODEA, NPDEVMODEA, LPDEVMODEA;
 
@@ -2273,18 +2248,14 @@ struct DEVMODEW {
 		DWORD  dmNup;
 	}
 	DWORD  dmDisplayFrequency;
-	static if (WINVER >= 0x0400) {
-		DWORD  dmICMMethod;
-		DWORD  dmICMIntent;
-		DWORD  dmMediaType;
-		DWORD  dmDitherType;
-		DWORD  dmReserved1;
-		DWORD  dmReserved2;
-		static if ((WINVER >= 0x0500) || (_WIN32_WINNT >= 0x0400)) {
-			DWORD  dmPanningWidth;
-			DWORD  dmPanningHeight;
-		}
-	}
+	DWORD  dmICMMethod;
+	DWORD  dmICMIntent;
+	DWORD  dmMediaType;
+	DWORD  dmDitherType;
+	DWORD  dmReserved1;
+	DWORD  dmReserved2;
+	DWORD  dmPanningWidth;
+	DWORD  dmPanningHeight;
 }
 alias DEVMODEW* PDEVMODEW, NPDEVMODEW, LPDEVMODEW;
 
@@ -2547,48 +2518,45 @@ struct TRIVERTEX {
 }
 alias TRIVERTEX* PTRIVERTEX, LPTRIVERTEX;
 
-static if (WINVER >= 0x0400) {
-
-	struct EMRGLSRECORD {
-		EMR emr;
-		DWORD cbData;
-		BYTE[1] Data;
-	}
-	alias EMRGLSRECORD* PEMRGLSRECORD;
-
-	struct EMRGLSBOUNDEDRECORD {
-		EMR emr;
-		RECTL rclBounds;
-		DWORD cbData;
-		BYTE[1] Data;
-	}
-	alias EMRGLSBOUNDEDRECORD* PEMRGLSBOUNDEDRECORD;
-
-	struct EMRPIXELFORMAT {
-		EMR emr;
-		PIXELFORMATDESCRIPTOR pfd;
-	}
-	alias EMRPIXELFORMAT* PEMRPIXELFORMAT;
-
-	struct EMRCREATECOLORSPACE {
-		EMR emr;
-		DWORD ihCS;
-		LOGCOLORSPACE lcs;
-	}
-	alias EMRCREATECOLORSPACE* PEMRCREATECOLORSPACE;
-
-	struct EMRSETCOLORSPACE {
-		EMR emr;
-		DWORD ihCS;
-	}
-	alias EMRSETCOLORSPACE* PEMRSETCOLORSPACE;
-	alias TypeDef!(EMRSETCOLORSPACE) EMRSELECTCOLORSPACE;
-	alias EMRSELECTCOLORSPACE* PEMRSELECTCOLORSPACE;
-	alias TypeDef!(EMRSETCOLORSPACE) EMRDELETECOLORSPACE;
-	alias EMRDELETECOLORSPACE* PEMRDELETECOLORSPACE;
+struct EMRGLSRECORD {
+	EMR emr;
+	DWORD cbData;
+	BYTE[1] Data;
 }
+alias EMRGLSRECORD* PEMRGLSRECORD;
 
-static if (WINVER >= 0x0500) {
+struct EMRGLSBOUNDEDRECORD {
+	EMR emr;
+	RECTL rclBounds;
+	DWORD cbData;
+	BYTE[1] Data;
+}
+alias EMRGLSBOUNDEDRECORD* PEMRGLSBOUNDEDRECORD;
+
+struct EMRPIXELFORMAT {
+	EMR emr;
+	PIXELFORMATDESCRIPTOR pfd;
+}
+alias EMRPIXELFORMAT* PEMRPIXELFORMAT;
+
+struct EMRCREATECOLORSPACE {
+	EMR emr;
+	DWORD ihCS;
+	LOGCOLORSPACE lcs;
+}
+alias EMRCREATECOLORSPACE* PEMRCREATECOLORSPACE;
+
+struct EMRSETCOLORSPACE {
+	EMR emr;
+	DWORD ihCS;
+}
+alias EMRSETCOLORSPACE* PEMRSETCOLORSPACE;
+alias TypeDef!(EMRSETCOLORSPACE) EMRSELECTCOLORSPACE;
+alias EMRSELECTCOLORSPACE* PEMRSELECTCOLORSPACE;
+alias TypeDef!(EMRSETCOLORSPACE) EMRDELETECOLORSPACE;
+alias EMRDELETECOLORSPACE* PEMRDELETECOLORSPACE;
+
+static if (_WIN32_WINNT >= 0x500) {
 
 	struct EMREXTESCAPE {
 		EMR emr;
@@ -3285,7 +3253,7 @@ alias TypeDef!(EMRSELECTCLIPPATH) EMRSETTEXTALIGN;
 alias EMRSETTEXTALIGN* PEMRSETTEXTALIGN;
 alias TypeDef!(EMRSELECTCLIPPATH) EMRENABLEICM;
 alias EMRENABLEICM* PEMRENABLEICM;
-static if (WINVER >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 	alias TypeDef!(EMRSELECTCLIPPATH) EMRSETLAYOUT;
 	alias EMRSETLAYOUT* PEMRSETLAYOUT;
 }
@@ -3321,12 +3289,10 @@ struct ENHMETAHEADER {
 	DWORD nPalEntries;
 	SIZEL szlDevice;
 	SIZEL szlMillimeters;
-	static if (WINVER >= 0x0400) {
-		DWORD cbPixelFormat;
-		DWORD offPixelFormat;
-		DWORD bOpenGL;
-	}
-	static if (WINVER >= 0x0500) {
+	DWORD cbPixelFormat;
+	DWORD offPixelFormat;
+	DWORD bOpenGL;
+	static if (_WIN32_WINNT >= 0x500) {
 		SIZEL szlMicrometers;
 	}
 }
@@ -3454,7 +3420,7 @@ struct GLYPHMETRICS {
 }
 alias GLYPHMETRICS* LPGLYPHMETRICS;
 
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 	struct WCRANGE {
 		WCHAR  wcLow;
 		USHORT cGlyphs;
@@ -3830,7 +3796,7 @@ alias DESIGNVECTOR* PDESIGNVECTOR, LPDESIGNVECTOR;
 const STAMP_DESIGNVECTOR = 0x8000000 + 'd' + ('v' << 8);
 const STAMP_AXESLIST     = 0x8000000 + 'a' + ('l' << 8);
 
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 
 	const MM_MAX_AXES_NAMELEN = 16;
 
@@ -3896,8 +3862,8 @@ static if (_WIN32_WINNT >= 0x0500) {
 	}
 	alias ENUMLOGFONTEXDVW* PENUMLOGFONTEXDVW, LPENUMLOGFONTEXDVW;
 
-	HFONT CreateFontIndirectExA(CPtr!(ENUMLOGFONTEXDVA));
-	HFONT CreateFontIndirectExW(CPtr!(ENUMLOGFONTEXDVW));
+	HFONT CreateFontIndirectExA(const(ENUMLOGFONTEXDVA)*);
+	HFONT CreateFontIndirectExW(const(ENUMLOGFONTEXDVW)*);
 	version (Unicode)
 		alias CreateFontIndirectExW CreateFontIndirectEx;
 	else
@@ -3925,7 +3891,7 @@ static if (_WIN32_WINNT >= 0x0500) {
 		alias PENUMTEXTMETRICA PENUMTEXTMETRIC;
 		alias LPENUMTEXTMETRICA LPENUMTEXTMETRIC;
 	}
-} /* _WIN32_WINNT >= 0x0500 */
+} /* _WIN32_WINNT >= 0x500 */
 
 struct GRADIENT_TRIANGLE {
 	ULONG Vertex1;
@@ -3960,30 +3926,28 @@ struct DISPLAY_DEVICEW {
 }
 alias DISPLAY_DEVICEW* PDISPLAY_DEVICEW, LPDISPLAY_DEVICEW;
 
-static if (WINVER >= 0x0400) {
-	struct DRAWPATRECT {
-		POINT ptPosition;
-		POINT ptSize;
-		WORD wStyle;
-		WORD wPattern;
-	}
-	alias DRAWPATRECT* PDRAWPATRECT;
+struct DRAWPATRECT {
+	POINT ptPosition;
+	POINT ptSize;
+	WORD wStyle;
+	WORD wPattern;
 }
+alias DRAWPATRECT* PDRAWPATRECT;
 
 // ---------
 // Callbacks
 
-alias BOOL function (HDC, int) ABORTPROC;
-alias int function (HDC, HANDLETABLE*, METARECORD*, int, LPARAM) MFENUMPROC;
-alias int function (HDC, HANDLETABLE*, CPtr!(ENHMETARECORD), int, LPARAM) ENHMFENUMPROC;
-alias int function (CPtr!(LOGFONTA), CPtr!(TEXTMETRICA), DWORD, LPARAM) FONTENUMPROCA, OLDFONTENUMPROCA;
-alias int function (CPtr!(LOGFONTW), CPtr!(TEXTMETRICW), DWORD, LPARAM) FONTENUMPROCW, OLDFONTENUMPROCW;
-alias int function (LPSTR, LPARAM) ICMENUMPROCA;
-alias int function (LPWSTR, LPARAM) ICMENUMPROCW;
-alias void function (LPVOID, LPARAM) GOBJENUMPROC;
-alias void function (int, int, LPARAM) LINEDDAPROC;
-alias UINT function (HWND, HMODULE, LPDEVMODEA, LPSTR, LPSTR, LPDEVMODEA, LPSTR, UINT) LPFNDEVMODE;
-alias DWORD function (LPSTR, LPSTR, UINT, LPSTR, LPDEVMODEA) LPFNDEVCAPS;
+alias extern(Windows) BOOL function (HDC, int) ABORTPROC;
+alias extern(Windows) int function (HDC, HANDLETABLE*, METARECORD*, int, LPARAM) MFENUMPROC;
+alias extern(Windows) int function (HDC, HANDLETABLE*, const(ENHMETARECORD)*, int, LPARAM) ENHMFENUMPROC;
+alias extern(Windows) int function (const(LOGFONTA)*, const(TEXTMETRICA)*, DWORD, LPARAM) FONTENUMPROCA, OLDFONTENUMPROCA;
+alias extern(Windows) int function (const(LOGFONTW)*, const(TEXTMETRICW)*, DWORD, LPARAM) FONTENUMPROCW, OLDFONTENUMPROCW;
+alias extern(Windows) int function (LPSTR, LPARAM) ICMENUMPROCA;
+alias extern(Windows) int function (LPWSTR, LPARAM) ICMENUMPROCW;
+alias extern(Windows) void function (LPVOID, LPARAM) GOBJENUMPROC;
+alias extern(Windows) void function (int, int, LPARAM) LINEDDAPROC;
+alias extern(Windows) UINT function (HWND, HMODULE, LPDEVMODEA, LPSTR, LPSTR, LPDEVMODEA, LPSTR, UINT) LPFNDEVMODE;
+alias extern(Windows) DWORD function (LPSTR, LPSTR, UINT, LPSTR, LPDEVMODEA) LPFNDEVCAPS;
 
 
 // ---------
@@ -4045,7 +4009,7 @@ extern(Windows) {
 	int AddFontResourceA(LPCSTR);
 	int AddFontResourceW(LPCWSTR);
 	BOOL AngleArc(HDC, int, int, DWORD, FLOAT, FLOAT);
-	BOOL AnimatePalette(HPALETTE, UINT, UINT, CPtr!(PALETTEENTRY));
+	BOOL AnimatePalette(HPALETTE, UINT, UINT, const(PALETTEENTRY)*);
 	BOOL Arc(HDC, int, int, int, int, int, int, int, int);
 	BOOL ArcTo(HDC, int, int, int, int, int, int, int, int);
 	BOOL BeginPath(HDC);
@@ -4053,31 +4017,31 @@ extern(Windows) {
 	BOOL CancelDC(HDC);
 	BOOL CheckColorsInGamut(HDC, PVOID, PVOID, DWORD);
 	BOOL Chord(HDC, int, int, int, int, int, int, int, int);
-	int ChoosePixelFormat(HDC, CPtr!(PIXELFORMATDESCRIPTOR));
+	int ChoosePixelFormat(HDC, const(PIXELFORMATDESCRIPTOR)*);
 	HENHMETAFILE CloseEnhMetaFile(HDC);
 	BOOL CloseFigure(HDC);
 	HMETAFILE CloseMetaFile(HDC);
 	BOOL ColorMatchToTarget(HDC, HDC, DWORD);
 	BOOL ColorCorrectPalette(HDC, HPALETTE, DWORD, DWORD);
 	int CombineRgn(HRGN, HRGN, HRGN, int);
-	BOOL CombineTransform(LPXFORM, CPtr!(XFORM), CPtr!(XFORM));
+	BOOL CombineTransform(LPXFORM, const(XFORM)*, const(XFORM)*);
 	HENHMETAFILE CopyEnhMetaFileA(HENHMETAFILE, LPCSTR);
 	HENHMETAFILE CopyEnhMetaFileW(HENHMETAFILE, LPCWSTR);
 	HMETAFILE CopyMetaFileA(HMETAFILE, LPCSTR);
 	HMETAFILE CopyMetaFileW(HMETAFILE, LPCWSTR);
 	HBITMAP CreateBitmap(int, int, UINT, UINT, PCVOID);
-	HBITMAP CreateBitmapIndirect(CPtr!(BITMAP));
-	HBRUSH CreateBrushIndirect(CPtr!(LOGBRUSH));
+	HBITMAP CreateBitmapIndirect(const(BITMAP)*);
+	HBRUSH CreateBrushIndirect(const(LOGBRUSH)*);
 	HCOLORSPACE CreateColorSpaceA(LPLOGCOLORSPACEA);
 	HCOLORSPACE CreateColorSpaceW(LPLOGCOLORSPACEW);
 	HBITMAP CreateCompatibleBitmap(HDC, int, int);
 	HDC CreateCompatibleDC(HDC);
-	HDC CreateDCA(LPCSTR, LPCSTR, LPCSTR, CPtr!(DEVMODEA));
-	HDC CreateDCW(LPCWSTR, LPCWSTR, LPCWSTR, CPtr!(DEVMODEW));
-	HBITMAP CreateDIBitmap(HDC, CPtr!(BITMAPINFOHEADER), DWORD, PCVOID, CPtr!(BITMAPINFO), UINT);
+	HDC CreateDCA(LPCSTR, LPCSTR, LPCSTR, const(DEVMODEA)*);
+	HDC CreateDCW(LPCWSTR, LPCWSTR, LPCWSTR, const(DEVMODEW)*);
+	HBITMAP CreateDIBitmap(HDC, const(BITMAPINFOHEADER)*, DWORD, PCVOID, const(BITMAPINFO)*, UINT);
 	HBRUSH CreateDIBPatternBrush(HGLOBAL, UINT);
 	HBRUSH CreateDIBPatternBrushPt(PCVOID, UINT);
-	HBITMAP CreateDIBSection(HDC, CPtr!(BITMAPINFO), UINT, void**, HANDLE, DWORD);
+	HBITMAP CreateDIBSection(HDC, const(BITMAPINFO)*, UINT, void**, HANDLE, DWORD);
 	HBITMAP CreateDiscardableBitmap(HDC, int, int);
 	HRGN CreateEllipticRgn(int, int, int, int);
 	HRGN CreateEllipticRgnIndirect(LPCRECT);
@@ -4085,20 +4049,20 @@ extern(Windows) {
 	HDC CreateEnhMetaFileW(HDC, LPCWSTR, LPCRECT, LPCWSTR);
 	HFONT CreateFontA(int, int, int, int, int, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, LPCSTR);
 	HFONT CreateFontW(int, int, int, int, int, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, DWORD, LPCWSTR);
-	HFONT CreateFontIndirectA(CPtr!(LOGFONTA));
-	HFONT CreateFontIndirectW(CPtr!(LOGFONTW));
+	HFONT CreateFontIndirectA(const(LOGFONTA)*);
+	HFONT CreateFontIndirectW(const(LOGFONTW)*);
 	HPALETTE CreateHalftonePalette(HDC);
 	HBRUSH CreateHatchBrush(int, COLORREF);
-	HDC CreateICA(LPCSTR, LPCSTR, LPCSTR, CPtr!(DEVMODEA));
-	HDC CreateICW(LPCWSTR, LPCWSTR, LPCWSTR, CPtr!(DEVMODEW));
+	HDC CreateICA(LPCSTR, LPCSTR, LPCSTR, const(DEVMODEA)*);
+	HDC CreateICW(LPCWSTR, LPCWSTR, LPCWSTR, const(DEVMODEW)*);
 	HDC CreateMetaFileA(LPCSTR);
 	HDC CreateMetaFileW(LPCWSTR);
-	HPALETTE CreatePalette(CPtr!(LOGPALETTE));
+	HPALETTE CreatePalette(const(LOGPALETTE)*);
 	HBRUSH CreatePatternBrush(HBITMAP);
 	HPEN CreatePen(int, int, COLORREF);
-	HPEN CreatePenIndirect(CPtr!(LOGPEN));
-	HRGN CreatePolygonRgn(CPtr!(POINT), int, int);
-	HRGN CreatePolyPolygonRgn(CPtr!(POINT), CPtr!(INT), int, int);
+	HPEN CreatePenIndirect(const(LOGPEN)*);
+	HRGN CreatePolygonRgn(const(POINT)*, int, int);
+	HRGN CreatePolyPolygonRgn(const(POINT)*, const(INT)*, int, int);
 	HRGN CreateRectRgn(int, int, int, int);
 	HRGN CreateRectRgnIndirect(LPCRECT);
 	HRGN CreateRoundRectRgn(int, int, int, int, int, int);
@@ -4111,8 +4075,8 @@ extern(Windows) {
 	BOOL DeleteMetaFile(HMETAFILE);
 	BOOL DeleteObject(HGDIOBJ);
 	int DescribePixelFormat(HDC, int, UINT, LPPIXELFORMATDESCRIPTOR);
-	DWORD DeviceCapabilitiesA(LPCSTR, LPCSTR, WORD, LPSTR, CPtr!(DEVMODEA));
-	DWORD DeviceCapabilitiesW(LPCWSTR, LPCWSTR, WORD, LPWSTR, CPtr!(DEVMODEW));
+	DWORD DeviceCapabilitiesA(LPCSTR, LPCSTR, WORD, LPSTR, const(DEVMODEA)*);
+	DWORD DeviceCapabilitiesW(LPCWSTR, LPCWSTR, WORD, LPWSTR, const(DEVMODEW)*);
 	BOOL DPtoLP(HDC, LPPOINT, int);
 	int DrawEscape(HDC, int, int, LPCSTR);
 	BOOL Ellipse(HDC, int, int, int, int);
@@ -4134,13 +4098,13 @@ extern(Windows) {
 	int Escape(HDC, int, int, LPCSTR, PVOID);
 	int ExcludeClipRect(HDC, int, int, int, int);
 	int ExcludeUpdateRgn(HDC, HWND);
-	HPEN ExtCreatePen(DWORD, DWORD, CPtr!(LOGBRUSH), DWORD, CPtr!(DWORD));
-	HRGN ExtCreateRegion(CPtr!(XFORM), DWORD, CPtr!(RGNDATA));
+	HPEN ExtCreatePen(DWORD, DWORD, const(LOGBRUSH)*, DWORD, const(DWORD)*);
+	HRGN ExtCreateRegion(const(XFORM)*, DWORD, const(RGNDATA)*);
 	int ExtEscape(HDC, int, int, LPCSTR, int, LPSTR);
 	BOOL ExtFloodFill(HDC, int, int, COLORREF, UINT);
 	int ExtSelectClipRgn(HDC, HRGN, int);
-	BOOL ExtTextOutA(HDC, int, int, UINT, LPCRECT, LPCSTR, UINT, CPtr!(INT));
-	BOOL ExtTextOutW(HDC, int, int, UINT, LPCRECT, LPCWSTR, UINT, CPtr!(INT));
+	BOOL ExtTextOutA(HDC, int, int, UINT, LPCRECT, LPCSTR, UINT, const(INT)*);
+	BOOL ExtTextOutW(HDC, int, int, UINT, LPCRECT, LPCWSTR, UINT, const(INT)*);
 	BOOL FillPath(HDC);
 	int FillRect(HDC, LPCRECT, HBRUSH);
 	int FillRgn(HDC, HRGN, HBRUSH);
@@ -4148,7 +4112,7 @@ extern(Windows) {
 	BOOL FlattenPath(HDC);
 	BOOL FloodFill(HDC, int, int, COLORREF);
 	BOOL FrameRgn(HDC, HRGN, HBRUSH, int, int);
-	BOOL GdiComment(HDC, UINT, CPtr!(BYTE));
+	BOOL GdiComment(HDC, UINT, const(BYTE)*);
 	BOOL GdiFlush();
 	DWORD GdiGetBatchLimit();
 	DWORD GdiSetBatchLimit(DWORD);
@@ -4180,7 +4144,7 @@ extern(Windows) {
 	BOOL GetCurrentPositionEx(HDC, LPPOINT);
 	HCURSOR GetCursor();
 	BOOL GetDCOrgEx(HDC, LPPOINT);
-    static if (_WIN32_WINNT >= 0x0500)
+    static if (_WIN32_WINNT >= 0x500)
     {
         DWORD GetDCPenColor(HGDIOBJ);
         COLORREF GetDCBrushColor(HGDIOBJ);
@@ -4196,11 +4160,11 @@ extern(Windows) {
 	UINT GetEnhMetaFileDescriptionW(HENHMETAFILE, UINT, LPWSTR);
 	UINT GetEnhMetaFileHeader(HENHMETAFILE, UINT, LPENHMETAHEADER);
 	UINT GetEnhMetaFilePaletteEntries(HENHMETAFILE, UINT, LPPALETTEENTRY);
-	UINT GetEnhMetaFilePixelFormat(HENHMETAFILE, DWORD, CPtr!(PIXELFORMATDESCRIPTOR));
+	UINT GetEnhMetaFilePixelFormat(HENHMETAFILE, DWORD, const(PIXELFORMATDESCRIPTOR)*);
 	DWORD GetFontData(HDC, DWORD, DWORD, PVOID, DWORD);
 	DWORD GetFontLanguageInfo(HDC);
-	DWORD GetGlyphOutlineA(HDC, UINT, UINT, LPGLYPHMETRICS, DWORD, PVOID, CPtr!(MAT2));
-	DWORD GetGlyphOutlineW(HDC, UINT, UINT, LPGLYPHMETRICS, DWORD, PVOID, CPtr!(MAT2));
+	DWORD GetGlyphOutlineA(HDC, UINT, UINT, LPGLYPHMETRICS, DWORD, PVOID, const(MAT2)*);
+	DWORD GetGlyphOutlineW(HDC, UINT, UINT, LPGLYPHMETRICS, DWORD, PVOID, const(MAT2)*);
 	int GetGraphicsMode(HDC);
 	BOOL GetICMProfileA(HDC, DWORD, LPSTR);
 	BOOL GetICMProfileW(HDC, DWORD, LPWSTR);
@@ -4262,7 +4226,7 @@ extern(Windows) {
 	BOOL LineTo(HDC, int, int);
 	BOOL LPtoDP(HDC, LPPOINT, int);
 	BOOL MaskBlt(HDC, int, int, int, int, HDC, int, int, HBITMAP, int, int, DWORD);
-	BOOL ModifyWorldTransform(HDC, CPtr!(XFORM), DWORD);
+	BOOL ModifyWorldTransform(HDC, const(XFORM)*, DWORD);
 	BOOL MoveToEx(HDC, int, int, LPPOINT);
 	int OffsetClipRgn(HDC, int, int);
 	int OffsetRgn(HRGN, int, int);
@@ -4273,20 +4237,20 @@ extern(Windows) {
 	HRGN PathToRegion(HDC);
 	BOOL Pie(HDC, int, int, int, int, int, int, int, int);
 	BOOL PlayEnhMetaFile(HDC, HENHMETAFILE, LPCRECT);
-	BOOL PlayEnhMetaFileRecord(HDC, LPHANDLETABLE, CPtr!(ENHMETARECORD), UINT);
+	BOOL PlayEnhMetaFileRecord(HDC, LPHANDLETABLE, const(ENHMETARECORD)*, UINT);
 	BOOL PlayMetaFile(HDC, HMETAFILE);
 	BOOL PlayMetaFileRecord(HDC, LPHANDLETABLE, LPMETARECORD, UINT);
-	BOOL PlgBlt(HDC, CPtr!(POINT), HDC, int, int, int, int, HBITMAP, int, int);
-	BOOL PolyBezier(HDC, CPtr!(POINT), DWORD);
-	BOOL PolyBezierTo(HDC, CPtr!(POINT), DWORD);
-	BOOL PolyDraw(HDC, CPtr!(POINT), CPtr!(BYTE), int);
-	BOOL Polygon(HDC, CPtr!(POINT), int);
-	BOOL Polyline(HDC, CPtr!(POINT), int);
-	BOOL PolylineTo(HDC, CPtr!(POINT), DWORD);
-	BOOL PolyPolygon(HDC, CPtr!(POINT), CPtr!(INT), int);
-	BOOL PolyPolyline(HDC, CPtr!(POINT), CPtr!(DWORD), DWORD);
-	BOOL PolyTextOutA(HDC, CPtr!(POLYTEXTA), int);
-	BOOL PolyTextOutW(HDC, CPtr!(POLYTEXTW), int);
+	BOOL PlgBlt(HDC, const(POINT)*, HDC, int, int, int, int, HBITMAP, int, int);
+	BOOL PolyBezier(HDC, const(POINT)*, DWORD);
+	BOOL PolyBezierTo(HDC, const(POINT)*, DWORD);
+	BOOL PolyDraw(HDC, const(POINT)*, const(BYTE)*, int);
+	BOOL Polygon(HDC, const(POINT)*, int);
+	BOOL Polyline(HDC, const(POINT)*, int);
+	BOOL PolylineTo(HDC, const(POINT)*, DWORD);
+	BOOL PolyPolygon(HDC, const(POINT)*, const(INT)*, int);
+	BOOL PolyPolyline(HDC, const(POINT)*, const(DWORD)*, DWORD);
+	BOOL PolyTextOutA(HDC, const(POLYTEXTA)*, int);
+	BOOL PolyTextOutW(HDC, const(POLYTEXTW)*, int);
 	BOOL PtInRegion(HRGN, int, int);
 	BOOL PtVisible(HDC, int, int);
 	UINT RealizePalette(HDC);
@@ -4296,8 +4260,8 @@ extern(Windows) {
 	BOOL RemoveFontResourceA(LPCSTR);
 	BOOL RemoveFontResourceW(LPCWSTR);
 
-	HDC ResetDCA(HDC, CPtr!(DEVMODEA));
-	HDC ResetDCW(HDC, CPtr!(DEVMODEW));
+	HDC ResetDCA(HDC, const(DEVMODEA)*);
+	HDC ResetDCW(HDC, const(DEVMODEW)*);
 	BOOL ResizePalette(HPALETTE, UINT);
 	BOOL RestoreDC(HDC, int);
 	BOOL RoundRect(HDC, int, int, int, int, int, int);
@@ -4316,32 +4280,32 @@ extern(Windows) {
 	int SetBkMode(HDC, int);
 	UINT SetBoundsRect(HDC, LPCRECT, UINT);
 	BOOL SetBrushOrgEx(HDC, int, int, LPPOINT);
-	BOOL SetColorAdjustment(HDC, CPtr!(COLORADJUSTMENT));
+	BOOL SetColorAdjustment(HDC, const(COLORADJUSTMENT)*);
 	BOOL SetColorSpace(HDC, HCOLORSPACE);
 
 	BOOL SetDeviceGammaRamp(HDC, PVOID);
-	UINT SetDIBColorTable(HDC, UINT, UINT, CPtr!(RGBQUAD));
-	int SetDIBits(HDC, HBITMAP, UINT, UINT, PCVOID, CPtr!(BITMAPINFO), UINT);
-	int SetDIBitsToDevice(HDC, int, int, DWORD, DWORD, int, int, UINT, UINT, PCVOID, CPtr!(BITMAPINFO), UINT);
-	HENHMETAFILE SetEnhMetaFileBits(UINT, CPtr!(BYTE));
+	UINT SetDIBColorTable(HDC, UINT, UINT, const(RGBQUAD)*);
+	int SetDIBits(HDC, HBITMAP, UINT, UINT, PCVOID, const(BITMAPINFO)*, UINT);
+	int SetDIBitsToDevice(HDC, int, int, DWORD, DWORD, int, int, UINT, UINT, PCVOID, const(BITMAPINFO)*, UINT);
+	HENHMETAFILE SetEnhMetaFileBits(UINT, const(BYTE)*);
 	int SetGraphicsMode(HDC, int);
 	int SetICMMode(HDC, int);
 	BOOL SetICMProfileA(HDC, LPSTR);
 	BOOL SetICMProfileW(HDC, LPWSTR);
 	int SetMapMode(HDC, int);
 
-	static if (WINVER >= 0x0500) {
+	static if (_WIN32_WINNT >= 0x500) {
 		DWORD SetLayout(HDC hdc, DWORD l);
 		DWORD GetLayout(HDC hdc);
 	}
 
 	DWORD SetMapperFlags(HDC, DWORD);
-	HMETAFILE SetMetaFileBitsEx(UINT, CPtr!(BYTE));
+	HMETAFILE SetMetaFileBitsEx(UINT, const(BYTE)*);
 	int SetMetaRgn(HDC);
 	BOOL SetMiterLimit(HDC, FLOAT, PFLOAT);
-	UINT SetPaletteEntries(HPALETTE, UINT, UINT, CPtr!(PALETTEENTRY));
+	UINT SetPaletteEntries(HPALETTE, UINT, UINT, const(PALETTEENTRY)*);
 	COLORREF SetPixel(HDC, int, int, COLORREF);
-	BOOL SetPixelFormat(HDC, int, CPtr!(PIXELFORMATDESCRIPTOR));
+	BOOL SetPixelFormat(HDC, int, const(PIXELFORMATDESCRIPTOR)*);
 	BOOL SetPixelV(HDC, int, int, COLORREF);
 	int SetPolyFillMode(HDC, int);
 	BOOL SetRectRgn(HRGN, int, int, int, int);
@@ -4356,13 +4320,13 @@ extern(Windows) {
 	BOOL SetViewportOrgEx(HDC, int, int, LPPOINT);
 	BOOL SetWindowExtEx(HDC, int, int, LPSIZE);
 	BOOL SetWindowOrgEx(HDC, int, int, LPPOINT);
-	HENHMETAFILE SetWinMetaFileBits(UINT, CPtr!(BYTE), HDC, CPtr!(METAFILEPICT));
-	BOOL SetWorldTransform(HDC, CPtr!(XFORM));
-	int StartDocA(HDC, CPtr!(DOCINFOA));
-	int StartDocW(HDC, CPtr!(DOCINFOW));
+	HENHMETAFILE SetWinMetaFileBits(UINT, const(BYTE)*, HDC, const(METAFILEPICT)*);
+	BOOL SetWorldTransform(HDC, const(XFORM)*);
+	int StartDocA(HDC, const(DOCINFOA)*);
+	int StartDocW(HDC, const(DOCINFOW)*);
 	int StartPage(HDC);
 	BOOL StretchBlt(HDC, int, int, int, int, HDC, int, int, int, int, DWORD);
-	int StretchDIBits(HDC, int, int, int, int, int, int, int, int, CPtr!(VOID) , CPtr!(BITMAPINFO) , UINT, DWORD);
+	int StretchDIBits(HDC, int, int, int, int, int, int, int, int, const(VOID)* , const(BITMAPINFO)* , UINT, DWORD);
 	BOOL StrokeAndFillPath(HDC);
 	BOOL StrokePath(HDC);
 	BOOL SwapBuffers(HDC);
@@ -4385,7 +4349,7 @@ extern(Windows) {
 	PROC wglGetProcAddress(LPCSTR);
 	BOOL wglMakeCurrent(HDC, HGLRC);
 	BOOL wglRealizeLayerPalette(HDC, int, BOOL);
-	int wglSetLayerPaletteEntries(HDC, int, int, int, CPtr!(COLORREF));
+	int wglSetLayerPaletteEntries(HDC, int, int, int, const(COLORREF)*);
 	BOOL wglShareLists(HGLRC, HGLRC);
 	BOOL wglSwapLayerBuffers(HDC, UINT);
 	BOOL wglUseFontBitmapsA(HDC, DWORD, DWORD, DWORD);
@@ -4393,7 +4357,7 @@ extern(Windows) {
 	BOOL wglUseFontOutlinesA(HDC, DWORD, DWORD, DWORD, FLOAT, FLOAT, int, LPGLYPHMETRICSFLOAT);
 	BOOL wglUseFontOutlinesW(HDC, DWORD, DWORD, DWORD, FLOAT, FLOAT, int, LPGLYPHMETRICSFLOAT);
 
-	static if (WINVER >= 0x0500) {
+	static if (_WIN32_WINNT >= 0x500) {
 	alias WGLSWAP* PWGLSWAP;
 	struct WGLSWAP {
 		HDC hdc;
@@ -4403,13 +4367,13 @@ extern(Windows) {
 	DWORD  wglSwapMultipleBuffers(UINT, WGLSWAP*);
 }
 
-static if (WINVER >= 0x0500) {
-		BOOL GdiAlphaBlend(HDC, int, int, int, int, HDC, int, int, int, int, BLENDFUNCTION);
+static if (_WIN32_WINNT >= 0x500) {
+		BOOL AlphaBlend(HDC, int, int, int, int, HDC, int, int, int, int, BLENDFUNCTION);
 		BOOL GradientFill(HDC, PTRIVERTEX, ULONG, PVOID, ULONG, ULONG);
 		BOOL TransparentBlt(HDC, int, int, int, int, HDC, int, int, int, int, UINT);
 	}
 
-	static if (_WIN32_WINNT >= 0x0500) {
+	static if (_WIN32_WINNT >= 0x500) {
 		COLORREF SetDCBrushColor(HDC, COLORREF);
 		COLORREF SetDCPenColor(HDC, COLORREF);
 		HANDLE AddFontMemResourceEx(PVOID, DWORD, PVOID, DWORD*);
@@ -4497,7 +4461,7 @@ version(Unicode) {
 	alias UpdateICMRegKeyW UpdateICMRegKey;
 	alias wglUseFontBitmapsW wglUseFontBitmaps;
 	alias wglUseFontOutlinesW wglUseFontOutlines;
-	static if (_WIN32_WINNT >= 0x0500) {
+	static if (_WIN32_WINNT >= 0x500) {
 		alias ENUMLOGFONTEXDVW ENUMLOGFONTEXDV;
 		alias PENUMLOGFONTEXDVW PENUMLOGFONTEXDV;
 		alias LPENUMLOGFONTEXDVW LPENUMLOGFONTEXDV;
@@ -4571,7 +4535,7 @@ version(Unicode) {
 	alias UpdateICMRegKeyA UpdateICMRegKey;
 	alias wglUseFontBitmapsA wglUseFontBitmaps;
 	alias wglUseFontOutlinesA wglUseFontOutlines;
-	static if (_WIN32_WINNT >= 0x0500) {
+	static if (_WIN32_WINNT >= 0x500) {
 		alias ENUMLOGFONTEXDVA ENUMLOGFONTEXDV;
 		alias PENUMLOGFONTEXDVA PENUMLOGFONTEXDV;
 		alias LPENUMLOGFONTEXDVA LPENUMLOGFONTEXDV;

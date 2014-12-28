@@ -9,6 +9,7 @@
 \***********************************************************************/
 
 module win32.ws2tcpip;
+version(Windows):
 
 import win32.w32api;
 //import win32.winbase;
@@ -223,10 +224,10 @@ struct addrinfo {
 }
 
 extern(Windows) {
-	static if (_WIN32_WINNT >= 0x0501) {
+	static if (_WIN32_WINNT >= 0x501) {
 		void freeaddrinfo(addrinfo*);
-		int getaddrinfo (CPtr!(char), CPtr!(char), CPtr!(addrinfo), addrinfo**);
-		int getnameinfo(CPtr!(SOCKADDR), socklen_t, char*, DWORD, char*, DWORD, int);
+		int getaddrinfo (const(char)*, const(char)*, const(addrinfo)*, addrinfo**);
+		int getnameinfo(const(SOCKADDR)*, socklen_t, char*, DWORD, char*, DWORD, int);
 	}
 }
 
@@ -265,7 +266,7 @@ extern(Windows) {
 		PCHAR pNodeBuffer, DWORD NodeBufferSize, PCHAR pServiceBuffer,
 		DWORD ServiceBufferSize, INT Flags);
 
-	static if (_WIN32_WINNT >= 0x0502) {
+	static if (_WIN32_WINNT >= 0x502) {
 		INT GetNameInfoW(SOCKADDR* pSockaddr, socklen_t SockaddrLength,
 			PWCHAR pNodeBuffer, DWORD NodeBufferSize, PWCHAR pServiceBuffer,
 			DWORD ServiceBufferSize, INT Flags);

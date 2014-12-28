@@ -9,6 +9,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.imagehlp;
+version(Windows):
 
 /* Comment from MinGW
 	NOTE: This strictly does not belong in the Win32 API since it's
@@ -259,7 +260,7 @@ struct IMAGEHLP_DUPLICATE_SYMBOL {
 }
 alias IMAGEHLP_DUPLICATE_SYMBOL* PIMAGEHLP_DUPLICATE_SYMBOL;
 
-alias HANDLE DIGEST_HANDLE;
+mixin DECLARE_HANDLE!("DIGEST_HANDLE");
 
 extern (Windows) {
 	alias BOOL function(IMAGEHLP_STATUS_REASON, LPSTR, LPSTR, ULONG, ULONG)

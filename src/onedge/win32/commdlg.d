@@ -8,6 +8,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.commdlg;
+version(Windows):
 pragma(lib, "comdlg32");
 
 private import win32.w32api;
@@ -35,7 +36,7 @@ enum : UINT {
 	CDN_TYPECHANGE     = CDN_FIRST - 6,
 }
 
-static if(_WIN32_WINNT >= 0x0500)
+static if(_WIN32_WINNT >= 0x500)
 {
     enum : UINT {
         CDN_INCLUDEITEM    = CDN_FIRST - 7,
@@ -195,7 +196,7 @@ enum : DWORD {
 	PD_NONETWORKBUTTON            = 0x200000
 }
 
-static if (_WIN32_WINNT_ONLY && _WIN32_WINNT >= 0x500) {
+static if (_WIN32_WINNT >= 0x500) {
 	enum : DWORD {
 		PD_CURRENTPAGE      = 0x00400000,
 		PD_NOCURRENTPAGE    = 0x00800000,
@@ -429,7 +430,7 @@ struct OPENFILENAMEA {
 	LPOFNHOOKPROC lpfnHook;
 	LPCSTR        lpTemplateName;
     
-    static if (_WIN32_WINNT_ONLY && _WIN32_WINNT >= 0x0500) {
+    static if (_WIN32_WINNT >= 0x500) {
         void          *pvReserved;
         DWORD         dwReserved;
         DWORD         FlagsEx;
@@ -459,7 +460,7 @@ struct OPENFILENAMEW {
 	LPOFNHOOKPROC lpfnHook;
 	LPCWSTR       lpTemplateName;
     
-    static if (_WIN32_WINNT_ONLY && _WIN32_WINNT >= 0x0500) {
+    static if (_WIN32_WINNT >= 0x500) {
         void          *pvReserved;
         DWORD         dwReserved;
         DWORD         FlagsEx;
@@ -565,7 +566,7 @@ struct PRINTDLGW {
 }
 alias PRINTDLGW* LPPRINTDLGW;
 
-static if (_WIN32_WINNT_ONLY && _WIN32_WINNT >= 0x500) {
+static if (_WIN32_WINNT >= 0x500) {
 	import win32.unknwn; // for LPUNKNOWN
 	import win32.prsht;  // for HPROPSHEETPAGE
 
@@ -625,7 +626,7 @@ static if (_WIN32_WINNT_ONLY && _WIN32_WINNT >= 0x500) {
 	}
 	alias PRINTDLGEXW* LPPRINTDLGEXW;
 
-} // _WIN32_WINNT_ONLY && _WIN32_WINNT >= 0x500
+} // _WIN32_WINNT >= 0x500
 
 extern (Windows) {
 	BOOL ChooseColorA(LPCHOOSECOLORA);
@@ -648,7 +649,7 @@ extern (Windows) {
 	HWND ReplaceTextA(LPFINDREPLACEA);
 	HWND ReplaceTextW(LPFINDREPLACEW);
 
-	static if (_WIN32_WINNT_ONLY && _WIN32_WINNT >= 0x500) {
+	static if (_WIN32_WINNT >= 0x500) {
 		HRESULT PrintDlgExA(LPPRINTDLGEXA);
 		HRESULT PrintDlgExW(LPPRINTDLGEXW);
 	}
@@ -673,7 +674,7 @@ version (Unicode) {
 	alias PrintDlgW PrintDlg;
 	alias ReplaceTextW ReplaceText;
 
-	static if (_WIN32_WINNT_ONLY && _WIN32_WINNT >= 0x500) {
+	static if (_WIN32_WINNT >= 0x500) {
 		alias PRINTDLGEXW PRINTDLGEX;
 		alias PrintDlgExW PrintDlgEx;
 	}
@@ -698,7 +699,7 @@ version (Unicode) {
 	alias PrintDlgA PrintDlg;
 	alias ReplaceTextA ReplaceText;
 
-	static if (_WIN32_WINNT_ONLY && _WIN32_WINNT >= 0x500) {
+	static if (_WIN32_WINNT >= 0x500) {
 		alias PRINTDLGEXA PRINTDLGEX;
 		alias PrintDlgExA PrintDlgEx;
 	}
@@ -712,6 +713,6 @@ alias OPENFILENAME* LPOPENFILENAME;
 alias OFNOTIFY* LPOFNOTIFY;
 alias PAGESETUPDLG* LPPAGESETUPDLG;
 alias PRINTDLG* LPPRINTDLG;
-static if (_WIN32_WINNT_ONLY && _WIN32_WINNT >= 0x500) {
+static if (_WIN32_WINNT >= 0x500) {
 	alias PRINTDLGEX* LPPRINTDLGEX;
 }

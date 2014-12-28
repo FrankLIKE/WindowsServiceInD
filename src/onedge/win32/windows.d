@@ -3,11 +3,12 @@
 *                                                                       *
 *                       Windows API header module                       *
 *                                                                       *
-*             Translated from MinGW API for MS-Windows 3.10             *
+*             Translated from MinGW API for MS-Windows 4.0              *
 *                                                                       *
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.windows;
+version(Windows):
 
 /*
 	windows.h - main header file for the Win32 API
@@ -25,17 +26,6 @@ module win32.windows;
 public import win32.w32api;
 public import win32.core;
 
-// We can't use static if for imports, build gets confused.
-version (WindowsVista) {
-	public import win32.winsvc;
-} else version (Windows2003) {
-	public import win32.winsvc;
-} else version (WindowsXP) {
-	public import win32.winsvc;
-} else version (WindowsNTonly) {
-	public import win32.winsvc;
-}
-
 public import win32.cderr;
 public import win32.dde;
 public import win32.ddeml;
@@ -44,8 +34,7 @@ public import win32.imm;
 public import win32.lzexpand;
 public import win32.mmsystem;
 public import win32.nb30;
-
-
+public import win32.winsvc;
 
 public import win32.rpc;
 public import win32.shellapi;
@@ -64,7 +53,7 @@ version (Win32_Winsock1) {
 }
 
 /+
-#if (_WIN32_WINNT >= 0x0400)
+#if (_WIN32_WINNT >= 0x400)
 #include <winsock2.h>
 /*
  * MS likes to include mswsock.h here as well,
@@ -73,5 +62,5 @@ version (Win32_Winsock1) {
  */
 #else
 #include <winsock.h>
-#endif /*  (_WIN32_WINNT >= 0x0400) */
+#endif /*  (_WIN32_WINNT >= 0x400) */
 +/

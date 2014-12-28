@@ -9,6 +9,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.ddeml;
+version(Windows):
 pragma(lib, "user32");
 
 private import win32.basetsd, win32.windef, win32.winnt;
@@ -189,7 +190,10 @@ enum : int {
 	MH_CLEANUP = 4
 }
 
-alias HANDLE HCONVLIST, HCONV, HSZ, HDDEDATA;
+mixin DECLARE_HANDLE!("HCONVLIST");
+mixin DECLARE_HANDLE!("HCONV");
+mixin DECLARE_HANDLE!("HSZ");
+mixin DECLARE_HANDLE!("HDDEDATA");
 
 extern (Windows) alias HDDEDATA
   function(UINT, UINT, HCONV, HSZ, HSZ, HDDEDATA, DWORD, DWORD) PFNCALLBACK;

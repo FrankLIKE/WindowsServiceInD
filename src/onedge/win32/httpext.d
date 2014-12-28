@@ -8,6 +8,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.httpext;
+version(Windows):
 
 /* Comment from MinGW
        httpext.h - Header for ISAPI extensions.
@@ -45,7 +46,7 @@ enum {
     HSE_IO_SEND_HEADERS             = 0x00000008
 }
 
-alias HANDLE HCONN;
+mixin DECLARE_HANDLE!("HCONN");
 
 struct HSE_VERSION_INFO {
 	DWORD dwExtensionVersion;

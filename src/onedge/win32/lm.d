@@ -8,7 +8,8 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.lm;
-
+version(Windows):
+/* removed - now supporting only Win2k up
 version (WindowsVista) {
 	version = WIN32_WINNT_ONLY;
 } else version (Windows2003) {
@@ -18,7 +19,7 @@ version (WindowsVista) {
 } else version (WindowsNTonly) {
 	version = WIN32_WINNT_ONLY;
 }
-
+*/
 public import win32.lmcons;
 public import win32.lmaccess;
 public import win32.lmalert;
@@ -30,16 +31,11 @@ public import win32.lmremutl;
 public import win32.lmrepl;
 public import win32.lmuse;
 public import win32.lmstats;
+public import win32.lmwksta;
+public import win32.lmserver;
 
-version (WIN32_WINNT_ONLY) {
-	public import win32.lmwksta;
-	public import win32.lmserver;
-}
-version (WindowsVista) {
-	public import win32.lmmsg;
-} else version (Windows2003) {
-	public import win32.lmmsg;
-} else version (WindowsXP) {
+version (Windows2000) {
+} else {
 	public import win32.lmmsg;
 }
 

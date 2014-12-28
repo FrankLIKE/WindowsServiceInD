@@ -8,6 +8,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.wincon;
+version(Windows):
 pragma(lib, "kernel32");
 
 private import win32.w32api, win32.windef;
@@ -25,7 +26,7 @@ enum {
 	BACKGROUND_INTENSITY = 128
 }
 
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 	enum {
 		CONSOLE_FULLSCREEN_MODE = 1,
 		CONSOLE_WINDOWED_MODE   = 0
@@ -209,21 +210,21 @@ BOOL ReadConsoleOutputCharacterA(HANDLE, LPSTR, DWORD, COORD, PDWORD);
 BOOL ReadConsoleOutputCharacterW(HANDLE, LPWSTR, DWORD, COORD, PDWORD);
 BOOL ReadConsoleOutputA(HANDLE, PCHAR_INFO, COORD, COORD, PSMALL_RECT);
 BOOL ReadConsoleOutputW(HANDLE, PCHAR_INFO, COORD, COORD, PSMALL_RECT);
-BOOL ScrollConsoleScreenBufferA(HANDLE, CPtr!(SMALL_RECT), CPtr!(SMALL_RECT), COORD, CPtr!(CHAR_INFO));
-BOOL ScrollConsoleScreenBufferW(HANDLE, CPtr!(SMALL_RECT), CPtr!(SMALL_RECT), COORD, CPtr!(CHAR_INFO));
+BOOL ScrollConsoleScreenBufferA(HANDLE, const(SMALL_RECT)*, const(SMALL_RECT)*, COORD, const(CHAR_INFO)*);
+BOOL ScrollConsoleScreenBufferW(HANDLE, const(SMALL_RECT)*, const(SMALL_RECT)*, COORD, const(CHAR_INFO)*);
 BOOL SetConsoleActiveScreenBuffer(HANDLE);
 BOOL SetConsoleCP(UINT);
 BOOL SetConsoleCtrlHandler(PHANDLER_ROUTINE, BOOL);
-BOOL SetConsoleCursorInfo(HANDLE, CPtr!(CONSOLE_CURSOR_INFO));
+BOOL SetConsoleCursorInfo(HANDLE, const(CONSOLE_CURSOR_INFO)*);
 BOOL SetConsoleCursorPosition(HANDLE, COORD);
 
 
-static if (_WIN32_WINNT >= 0x0500) {
+static if (_WIN32_WINNT >= 0x500) {
 BOOL GetConsoleDisplayMode(LPDWORD);
 HWND GetConsoleWindow();
 }
 
-static if (_WIN32_WINNT >= 0x0501) {
+static if (_WIN32_WINNT >= 0x501) {
 BOOL AttachConsole(DWORD);
 BOOL SetConsoleDisplayMode(HANDLE, DWORD, PCOORD);
 const DWORD ATTACH_PARENT_PROCESS = cast(DWORD)-1;
@@ -235,14 +236,14 @@ BOOL SetConsoleScreenBufferSize(HANDLE, COORD);
 BOOL SetConsoleTextAttribute(HANDLE, WORD);
 BOOL SetConsoleTitleA(LPCSTR);
 BOOL SetConsoleTitleW(LPCWSTR);
-BOOL SetConsoleWindowInfo(HANDLE, BOOL, CPtr!(SMALL_RECT));
+BOOL SetConsoleWindowInfo(HANDLE, BOOL, const(SMALL_RECT)*);
 BOOL WriteConsoleA(HANDLE, PCVOID, DWORD, PDWORD, PVOID);
 BOOL WriteConsoleW(HANDLE, PCVOID, DWORD, PDWORD, PVOID);
-BOOL WriteConsoleInputA(HANDLE, CPtr!(INPUT_RECORD), DWORD, PDWORD);
-BOOL WriteConsoleInputW(HANDLE, CPtr!(INPUT_RECORD), DWORD, PDWORD);
-BOOL WriteConsoleOutputA(HANDLE, CPtr!(CHAR_INFO), COORD, COORD, PSMALL_RECT);
-BOOL WriteConsoleOutputW(HANDLE, CPtr!(CHAR_INFO), COORD, COORD, PSMALL_RECT);
-BOOL WriteConsoleOutputAttribute(HANDLE, CPtr!(WORD), DWORD, COORD, PDWORD);
+BOOL WriteConsoleInputA(HANDLE, const(INPUT_RECORD)*, DWORD, PDWORD);
+BOOL WriteConsoleInputW(HANDLE, const(INPUT_RECORD)*, DWORD, PDWORD);
+BOOL WriteConsoleOutputA(HANDLE, const(CHAR_INFO)*, COORD, COORD, PSMALL_RECT);
+BOOL WriteConsoleOutputW(HANDLE, const(CHAR_INFO)*, COORD, COORD, PSMALL_RECT);
+BOOL WriteConsoleOutputAttribute(HANDLE, const(WORD)*, DWORD, COORD, PDWORD);
 BOOL WriteConsoleOutputCharacterA(HANDLE, LPCSTR, DWORD, COORD, PDWORD);
 BOOL WriteConsoleOutputCharacterW(HANDLE, LPCWSTR, DWORD, COORD, PDWORD);
 

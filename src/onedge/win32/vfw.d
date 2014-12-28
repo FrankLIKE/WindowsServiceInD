@@ -8,6 +8,7 @@
 \***********************************************************************/
 
 module win32.vfw;
+version(Windows):
 pragma(lib, "vfw32");
 
 private import
@@ -673,7 +674,7 @@ extern (Windows) {
 	void ICCompressorFree(PCOMPVARS pc);
 }
 
-alias HANDLE HDRAWDIB;
+mixin DECLARE_HANDLE!("HDRAWDIB");
 
 enum {
 	DDF_0001			= 0x0001,

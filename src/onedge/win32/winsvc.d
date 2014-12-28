@@ -9,12 +9,13 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.winsvc;
+version(Windows):
 pragma(lib, "advapi32");
 
 private import win32.w32api, win32.windef;
 
 // FIXME: check Windows version support
-const _WIN32_WINNT = 0x501;//>=Windows XP  
+
 const TCHAR[]
 	SERVICES_ACTIVE_DATABASE = "ServicesActive",
 	SERVICES_FAILED_DATABASE = "ServicesFailed";
@@ -185,7 +186,7 @@ alias SERVICE_TABLE_ENTRYW* LPSERVICE_TABLE_ENTRYW;
 mixin DECLARE_HANDLE!("SC_HANDLE");
 alias SC_HANDLE* LPSC_HANDLE;
 alias void* SC_LOCK;
-mixin DECLARE_HANDLE!("SERVICE_STATUS_HANDLE");
+alias DWORD SERVICE_STATUS_HANDLE;
 
 extern (Windows) {
 	alias void function(DWORD) LPHANDLER_FUNCTION;

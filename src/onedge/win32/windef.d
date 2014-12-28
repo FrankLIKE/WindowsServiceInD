@@ -9,6 +9,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.windef;
+version(Windows):
 
 public import win32.winnt;
 private import win32.w32api;
@@ -51,30 +52,70 @@ ubyte HIBYTE(ushort w) {
 	return cast(ubyte) (w >>> 8);
 }
 
-void* NULL = null;
-alias ubyte       BYTE;
-alias ubyte*      PBYTE, LPBYTE;
-alias ushort      USHORT, WORD, ATOM;
-alias ushort*     PUSHORT, PWORD, LPWORD;
-alias uint        ULONG, DWORD, UINT, COLORREF;
-alias uint*       PULONG, PDWORD, LPDWORD, PUINT, LPUINT;
-alias int         WINBOOL, BOOL, INT, LONG, HFILE, HRESULT;
-alias int*        PWINBOOL, LPWINBOOL, PBOOL, LPBOOL, PINT, LPINT, LPLONG;
-alias float       FLOAT;
-alias float*      PFLOAT;
-alias CPtr!(void) PCVOID, LPCVOID;
+template max(T) {
+	T max(T a, T b) {
+		return a > b ? a : b;
+	}
+}
+
+template min(T) {
+	T min(T a, T b) {
+		return a < b ? a : b;
+	}
+}
+
+enum void* NULL = null;
+alias ubyte        BYTE;
+alias ubyte*       PBYTE, LPBYTE;
+alias ushort       USHORT, WORD, ATOM;
+alias ushort*      PUSHORT, PWORD, LPWORD;
+alias uint         ULONG, DWORD, UINT, COLORREF;
+alias uint*        PULONG, PDWORD, LPDWORD, PUINT, LPUINT;
+alias int          WINBOOL, BOOL, INT, LONG, HFILE, HRESULT;
+alias int*         PWINBOOL, LPWINBOOL, PBOOL, LPBOOL, PINT, LPINT, LPLONG;
+alias float        FLOAT;
+alias float*       PFLOAT;
+alias const(void)* PCVOID, LPCVOID;
 
 alias UINT_PTR WPARAM;
 alias LONG_PTR LPARAM, LRESULT;
 
-alias HANDLE HGLOBAL, HLOCAL, GLOBALHANDLE, LOCALHANDLE, HGDIOBJ, HACCEL,
-  HBITMAP, HBRUSH, HCOLORSPACE, HDC, HGLRC, HDESK, HENHMETAFILE, HFONT,
-  HICON, HINSTANCE, HKEY, HMENU, HMETAFILE, HMODULE, HMONITOR, HPALETTE, HPEN,
-  HRGN, HRSRC, HSTR, HTASK, HWND, HWINSTA, HKL, HCURSOR;
-alias HANDLE* PHKEY;
+mixin DECLARE_HANDLE!("HGLOBAL");
+mixin DECLARE_HANDLE!("HLOCAL");
+mixin DECLARE_HANDLE!("GLOBALHANDLE");
+mixin DECLARE_HANDLE!("LOCALHANDLE");
+mixin DECLARE_HANDLE!("HGDIOBJ");
+mixin DECLARE_HANDLE!("HACCEL");
+mixin DECLARE_HANDLE!("HBITMAP", HGDIOBJ);
+mixin DECLARE_HANDLE!("HBRUSH", HGDIOBJ);
+mixin DECLARE_HANDLE!("HCOLORSPACE");
+mixin DECLARE_HANDLE!("HDC");
+mixin DECLARE_HANDLE!("HGLRC");
+mixin DECLARE_HANDLE!("HDESK");
+mixin DECLARE_HANDLE!("HENHMETAFILE");
+mixin DECLARE_HANDLE!("HFONT", HGDIOBJ);
+mixin DECLARE_HANDLE!("HICON");
+mixin DECLARE_HANDLE!("HINSTANCE");
+mixin DECLARE_HANDLE!("HKEY");
+mixin DECLARE_HANDLE!("HMENU");
+mixin DECLARE_HANDLE!("HMETAFILE");
+mixin DECLARE_HANDLE!("HMODULE");
+mixin DECLARE_HANDLE!("HMONITOR");
+mixin DECLARE_HANDLE!("HPALETTE");
+mixin DECLARE_HANDLE!("HPEN", HGDIOBJ);
+mixin DECLARE_HANDLE!("HRGN", HGDIOBJ);
+mixin DECLARE_HANDLE!("HRSRC");
+mixin DECLARE_HANDLE!("HSTR");
+mixin DECLARE_HANDLE!("HTASK");
+mixin DECLARE_HANDLE!("HWND");
+mixin DECLARE_HANDLE!("HWINSTA");
+mixin DECLARE_HANDLE!("HKL");
+mixin DECLARE_HANDLE!("HCURSOR");
+alias HKEY* PHKEY;
 
-static if (WINVER >= 0x500) {
-	alias HANDLE HTERMINAL, HWINEVENTHOOK;
+static if (_WIN32_WINNT >= 0x500) {
+	mixin DECLARE_HANDLE!("HTERMINAL");
+	mixin DECLARE_HANDLE!("HWINEVENTHOOK");
 }
 
 alias extern (Windows) INT_PTR function() FARPROC, NEARPROC, PROC;
@@ -86,8 +127,8 @@ struct RECT {
 	LONG bottom;
 }
 alias RECT RECTL;
-alias RECT*       PRECT, LPRECT, PRECTL, LPRECTL;
-alias CPtr!(RECT) LPCRECT, LPCRECTL;
+alias RECT*        PRECT, LPRECT, PRECTL, LPRECTL;
+alias const(RECT)* LPCRECT, LPCRECTL;
 
 struct POINT {
 	LONG x;

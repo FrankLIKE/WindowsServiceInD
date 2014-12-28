@@ -8,6 +8,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.docobj;
+version(Windows):
 
 private import win32.basetyps, win32.oaidl, win32.objidl, win32.oleidl,
   win32.unknwn, win32.windef, win32.wtypes;
@@ -124,8 +125,8 @@ interface IOleDocument : IUnknown {
 }
 
 interface IOleCommandTarget : IUnknown {
-	HRESULT QueryStatus(CPtr!(GUID), ULONG, OLECMD*, OLECMDTEXT*);
-	HRESULT Exec(CPtr!(GUID), DWORD, DWORD, VARIANTARG*, VARIANTARG*);
+	HRESULT QueryStatus(const(GUID)*, ULONG, OLECMD*, OLECMDTEXT*);
+	HRESULT Exec(const(GUID)*, DWORD, DWORD, VARIANTARG*, VARIANTARG*);
 }
 
 interface IOleDocumentSite : IUnknown {

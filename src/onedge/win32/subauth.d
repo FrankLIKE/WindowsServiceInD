@@ -8,6 +8,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.subauth;
+version(Windows):
 
 private import win32.ntdef, win32.windef;
 
@@ -106,8 +107,8 @@ struct STRING {
 alias STRING* PSTRING;
 +/
 
-alias HANDLE SAM_HANDLE;
-alias HANDLE* PSAM_HANDLE;
+mixin DECLARE_HANDLE!("SAM_HANDLE");
+alias SAM_HANDLE* PSAM_HANDLE;
 
 struct OLD_LARGE_INTEGER {
 	ULONG LowPart;

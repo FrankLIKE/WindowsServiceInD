@@ -9,6 +9,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.winnls;
+version(Windows):
 pragma(lib, "kernel32");
 
 private import win32.basetsd, win32.w32api, win32.winbase, win32.windef;
@@ -465,7 +466,7 @@ enum : LGRPID {
 	LGRPID_ARMENIAN // = 17
 }
 
-static if (WINVER >= 0x500) {
+static if (_WIN32_WINNT >= 0x500) {
 	enum : LCTYPE {
 		LOCALE_SYEARMONTH             = 0x1006,
 		LOCALE_SENGCURRNAME           = 0x1007,
@@ -491,7 +492,7 @@ static if (WINVER >= 0x500) {
 		CAL_RETURN_NUMBER    = LOCALE_RETURN_NUMBER,
 		CAL_USE_CP_ACP       = LOCALE_USE_CP_ACP
 	}
-} // (WINVER >= 0x500)
+} // (_WIN32_WINNT >= 0x500)
 
 extern (Windows) {
 	alias BOOL function(LPSTR) CALINFO_ENUMPROCA;
@@ -645,18 +646,18 @@ extern (Windows) {
 	BOOL GetCPInfo(UINT, LPCPINFO);
 	BOOL GetCPInfoExA(UINT, DWORD, LPCPINFOEXA);
 	BOOL GetCPInfoExW(UINT, DWORD, LPCPINFOEXW);
-	int GetCurrencyFormatA(LCID, DWORD, LPCSTR,  CPtr!(CURRENCYFMTA), LPSTR, int);
-	int GetCurrencyFormatW(LCID, DWORD, LPCWSTR,  CPtr!(CURRENCYFMTW), LPWSTR,
+	int GetCurrencyFormatA(LCID, DWORD, LPCSTR,  const(CURRENCYFMTA)*, LPSTR, int);
+	int GetCurrencyFormatW(LCID, DWORD, LPCWSTR,  const(CURRENCYFMTW)*, LPWSTR,
 	  int);
-	int GetDateFormatA(LCID, DWORD,  CPtr!(SYSTEMTIME), LPCSTR, LPSTR, int);
-	int GetDateFormatW(LCID, DWORD,  CPtr!(SYSTEMTIME), LPCWSTR, LPWSTR, int);
+	int GetDateFormatA(LCID, DWORD,  const(SYSTEMTIME)*, LPCSTR, LPSTR, int);
+	int GetDateFormatW(LCID, DWORD,  const(SYSTEMTIME)*, LPCWSTR, LPWSTR, int);
 	int GetGeoInfoA(GEOID, GEOTYPE, LPSTR, int, LANGID);
 	int GetGeoInfoW(GEOID, GEOTYPE, LPWSTR, int, LANGID);
 	int GetLocaleInfoA(LCID, LCTYPE, LPSTR, int);
 	int GetLocaleInfoW(LCID, LCTYPE, LPWSTR, int);
 	BOOL GetNLSVersion(NLS_FUNCTION, LCID, LPNLSVERSIONINFO);
-	int GetNumberFormatA(LCID, DWORD, LPCSTR,  CPtr!(NUMBERFMTA), LPSTR, int);
-	int GetNumberFormatW(LCID, DWORD, LPCWSTR,  CPtr!(NUMBERFMTW), LPWSTR, int);
+	int GetNumberFormatA(LCID, DWORD, LPCSTR,  const(NUMBERFMTA)*, LPSTR, int);
+	int GetNumberFormatW(LCID, DWORD, LPCWSTR,  const(NUMBERFMTW)*, LPWSTR, int);
 	UINT GetOEMCP();
 	BOOL GetStringTypeA(LCID, DWORD, LPCSTR, int, LPWORD);
 	BOOL GetStringTypeW(DWORD, LPCWSTR, int, LPWORD);
@@ -665,8 +666,8 @@ extern (Windows) {
 	LANGID GetSystemDefaultLangID();
 	LCID GetSystemDefaultLCID();
 	LCID GetThreadLocale();
-	int GetTimeFormatA(LCID, DWORD,  CPtr!(SYSTEMTIME), LPCSTR, LPSTR, int);
-	int GetTimeFormatW(LCID, DWORD,  CPtr!(SYSTEMTIME), LPCWSTR, LPWSTR, int);
+	int GetTimeFormatA(LCID, DWORD,  const(SYSTEMTIME)*, LPCSTR, LPSTR, int);
+	int GetTimeFormatW(LCID, DWORD,  const(SYSTEMTIME)*, LPCWSTR, LPWSTR, int);
 	LANGID GetUserDefaultLangID();
 	LCID GetUserDefaultLCID();
 	GEOID GetUserGeoID(GEOCLASS);
@@ -688,7 +689,7 @@ extern (Windows) {
 	int WideCharToMultiByte(UINT, DWORD, LPCWSTR, int, LPSTR, int, LPCSTR,
 	  LPBOOL);
 
-	static if (WINVER >= 0x410) {
+	static if (_WIN32_WINNT >= 0x410) {
 		BOOL EnumCalendarInfoExA(CALINFO_ENUMPROCEXA, LCID, CALID, CALTYPE);
 		BOOL EnumCalendarInfoExW(CALINFO_ENUMPROCEXW, LCID, CALID, CALTYPE);
 		BOOL EnumDateFormatsExA(DATEFMT_ENUMPROCEXA, LCID, DWORD);
@@ -696,22 +697,20 @@ extern (Windows) {
 		BOOL IsValidLanguageGroup(LGRPID, DWORD);
 	}
 
-	static if (WINVER >= 0x500) {
+	static if (_WIN32_WINNT >= 0x500) {
 		LANGID GetSystemDefaultUILanguage();
 		LANGID GetUserDefaultUILanguage();
 
-		static if (_WIN32_WINNT_ONLY) {
-			BOOL EnumSystemLanguageGroupsA(LANGUAGEGROUP_ENUMPROCA, DWORD,
-			  LONG_PTR);
-			BOOL EnumSystemLanguageGroupsW(LANGUAGEGROUP_ENUMPROCW, DWORD,
-			  LONG_PTR);
-			BOOL EnumLanguageGroupLocalesA(LANGGROUPLOCALE_ENUMPROCA, LGRPID,
-			  DWORD, LONG_PTR);
-			BOOL EnumLanguageGroupLocalesW(LANGGROUPLOCALE_ENUMPROCW, LGRPID,
-			  DWORD, LONG_PTR);
-			BOOL EnumUILanguagesA(UILANGUAGE_ENUMPROCA, DWORD, LONG_PTR);
-			BOOL EnumUILanguagesW(UILANGUAGE_ENUMPROCW, DWORD, LONG_PTR);
-		}
+		BOOL EnumSystemLanguageGroupsA(LANGUAGEGROUP_ENUMPROCA, DWORD,
+		  LONG_PTR);
+		BOOL EnumSystemLanguageGroupsW(LANGUAGEGROUP_ENUMPROCW, DWORD,
+		  LONG_PTR);
+		BOOL EnumLanguageGroupLocalesA(LANGGROUPLOCALE_ENUMPROCA, LGRPID,
+		  DWORD, LONG_PTR);
+		BOOL EnumLanguageGroupLocalesW(LANGGROUPLOCALE_ENUMPROCW, LGRPID,
+		  DWORD, LONG_PTR);
+		BOOL EnumUILanguagesA(UILANGUAGE_ENUMPROCA, DWORD, LONG_PTR);
+		BOOL EnumUILanguagesW(UILANGUAGE_ENUMPROCW, DWORD, LONG_PTR);
 	}
 }
 
@@ -751,12 +750,12 @@ version (Unicode) {
 	alias SetCalendarInfoW SetCalendarInfo;
 	alias SetLocaleInfoW SetLocaleInfo;
 
-	static if (WINVER >= 0x410) {
+	static if (_WIN32_WINNT >= 0x410) {
 		alias EnumCalendarInfoExW EnumCalendarInfoEx;
 		alias EnumDateFormatsExW EnumDateFormatsEx;
 	}
 
-	static if (_WIN32_WINNT_ONLY && WINVER >= 0x500) {
+	static if (_WIN32_WINNT >= 0x500) {
 		alias EnumSystemLanguageGroupsW EnumSystemLanguageGroups;
 		alias EnumLanguageGroupLocalesW EnumLanguageGroupLocales;
 		alias EnumUILanguagesW EnumUILanguages;
@@ -798,12 +797,12 @@ version (Unicode) {
 	alias SetCalendarInfoA SetCalendarInfo;
 	alias SetLocaleInfoA SetLocaleInfo;
 
-	static if (WINVER >= 0x410) {
+	static if (_WIN32_WINNT >= 0x410) {
 		alias EnumCalendarInfoExA EnumCalendarInfoEx;
 		alias EnumDateFormatsExA EnumDateFormatsEx;
 	}
 
-	static if (_WIN32_WINNT_ONLY && WINVER >= 0x500) {
+	static if (_WIN32_WINNT >= 0x500) {
 		alias EnumSystemLanguageGroupsA EnumSystemLanguageGroups;
 		alias EnumLanguageGroupLocalesA EnumLanguageGroupLocales;
 		alias EnumUILanguagesA EnumUILanguages;

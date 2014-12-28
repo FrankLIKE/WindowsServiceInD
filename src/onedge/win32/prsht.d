@@ -9,6 +9,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.prsht;
+version(Windows):
 pragma(lib, "comctl32");
 
 private import win32.w32api, win32.windef, win32.winuser;
@@ -28,7 +29,7 @@ enum {
 	PSP_PREMATURE    = 0x00000400
 }
 
-static if (_WIN32_IE >= 0x0400) {
+static if (_WIN32_IE >= 0x400) {
 	enum {
 		PSP_HIDEHEADER        = 0x00000800,
 		PSP_USEHEADERTITLE    = 0x00001000,
@@ -58,7 +59,7 @@ enum {
 	PSH_WIZARDCONTEXTHELP = 0x00001000
 }
 
-static if (_WIN32_IE >= 0x0400) {
+static if (_WIN32_IE >= 0x400) {
 	enum {
 		PSH_WATERMARK        = 0x00008000,
 		PSH_USEHBMWATERMARK  = 0x00010000,
@@ -79,7 +80,7 @@ static if (_WIN32_IE >= 0x0400) {
 	}
 }
 
-static if (_WIN32_IE >= 0x0500) {
+static if (_WIN32_IE >= 0x500) {
 	enum {
 		PSH_WIZARD_LITE   = 0x00400000,
 		PSH_NOCONTEXTHELP = 0x02000000
@@ -104,12 +105,12 @@ enum {
 	PSN_WIZFINISH   = (-208),
 	PSN_QUERYCANCEL = (-209)
 }
-static if (_WIN32_IE >= 0x0400) {
+static if (_WIN32_IE >= 0x400) {
 	enum {
 		PSN_GETOBJECT = (-210)
 	}
 }
-static if (_WIN32_IE >= 0x0500) {
+static if (_WIN32_IE >= 0x500) {
 	enum {
 		PSN_TRANSLATEACCELERATOR = (-212),
 		PSN_QUERYINITIALFOCUS    = (-213)
@@ -210,13 +211,13 @@ struct PROPSHEETPAGEA {
 	LPARAM  lParam;
 	LPFNPSPCALLBACKA pfnCallback;
 	UINT*     pcRefParent;
-	static if (_WIN32_IE >= 0x0400) {
+	static if (_WIN32_IE >= 0x400) {
 		LPCSTR pszHeaderTitle;
 		LPCSTR pszHeaderSubTitle;
 	}
 }
-alias PROPSHEETPAGEA*       LPPROPSHEETPAGEA;
-alias CPtr!(PROPSHEETPAGEA) LPCPROPSHEETPAGEA;
+alias PROPSHEETPAGEA*        LPPROPSHEETPAGEA;
+alias const(PROPSHEETPAGEA)* LPCPROPSHEETPAGEA;
 
 struct PROPSHEETPAGEW {
 	DWORD     dwSize = PROPSHEETPAGEW.sizeof;
@@ -235,15 +236,15 @@ struct PROPSHEETPAGEW {
 	LPARAM    lParam;
 	LPFNPSPCALLBACKW pfnCallback;
 	UINT*     pcRefParent;
-	static if (_WIN32_IE >= 0x0400) {
+	static if (_WIN32_IE >= 0x400) {
 		LPCWSTR pszHeaderTitle;
 		LPCWSTR pszHeaderSubTitle;
 	}
 }
-alias PROPSHEETPAGEW*       LPPROPSHEETPAGEW;
-alias CPtr!(PROPSHEETPAGEW) LPCPROPSHEETPAGEW;
+alias PROPSHEETPAGEW*        LPPROPSHEETPAGEW;
+alias const(PROPSHEETPAGEW)* LPCPROPSHEETPAGEW;
 
-alias HANDLE HPROPSHEETPAGE;
+mixin DECLARE_HANDLE!("HPROPSHEETPAGE");
 
 struct PROPSHEETHEADERA {
 	DWORD dwSize = PROPSHEETHEADERA.sizeof;
@@ -265,7 +266,7 @@ struct PROPSHEETHEADERA {
 		HPROPSHEETPAGE*   phpage;
 	}
 	PFNPROPSHEETCALLBACK pfnCallback;
-	static if (_WIN32_IE >= 0x0400) {
+	static if (_WIN32_IE >= 0x400) {
 		union {
 			HBITMAP hbmWatermark;
 			LPCSTR  pszbmWatermark;
@@ -277,8 +278,8 @@ struct PROPSHEETHEADERA {
 		}
 	}
 }
-alias PROPSHEETHEADERA*       LPPROPSHEETHEADERA;
-alias CPtr!(PROPSHEETHEADERA) LPCPROPSHEETHEADERA;
+alias PROPSHEETHEADERA*        LPPROPSHEETHEADERA;
+alias const(PROPSHEETHEADERA)* LPCPROPSHEETHEADERA;
 
 struct PROPSHEETHEADERW {
 	DWORD     dwSize = PROPSHEETHEADERW.sizeof;
@@ -300,7 +301,7 @@ struct PROPSHEETHEADERW {
 		HPROPSHEETPAGE*   phpage;
 	}
 	PFNPROPSHEETCALLBACK pfnCallback;
-	static if (_WIN32_IE >= 0x0400) {
+	static if (_WIN32_IE >= 0x400) {
 		union {
 			HBITMAP hbmWatermark;
 			LPCWSTR pszbmWatermark;
@@ -312,8 +313,8 @@ struct PROPSHEETHEADERW {
 		}
 	}
 }
-alias PROPSHEETHEADERW*       LPPROPSHEETHEADERW;
-alias CPtr!(PROPSHEETHEADERW) LPCPROPSHEETHEADERW;
+alias PROPSHEETHEADERW*        LPPROPSHEETHEADERW;
+alias const(PROPSHEETHEADERW)* LPCPROPSHEETHEADERW;
 
 alias BOOL function(HPROPSHEETPAGE, LPARAM) LPFNADDPROPSHEETPAGE;
 alias BOOL function(LPVOID, LPFNADDPROPSHEETPAGE, LPARAM)

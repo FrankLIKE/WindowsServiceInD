@@ -8,6 +8,7 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.basetyps;
+version(Windows):
 
 private import win32.windef, win32.basetsd;
 
@@ -19,6 +20,6 @@ align(1) struct GUID {  // size is 16
 }
 alias GUID UUID, IID, CLSID, FMTID, uuid_t;
 alias GUID* LPGUID, LPCLSID, LPIID;
-alias CPtr!(GUID) REFGUID, REFIID, REFCLSID, REFFMTID;
+alias const(GUID)* REFGUID, REFIID, REFCLSID, REFFMTID;
 
 alias uint error_status_t, PROPID;

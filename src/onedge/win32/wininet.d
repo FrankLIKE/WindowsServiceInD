@@ -9,6 +9,8 @@
 *                       Placed into public domain                       *
 \***********************************************************************/
 module win32.wininet;
+version(Windows):
+pragma(lib, "wininet");
 
 // FIXME: check types and grouping of constants
 
@@ -216,9 +218,6 @@ enum {
 	INTERNET_STATUS_REQUEST_COMPLETE      = 100,
 	INTERNET_STATUS_REDIRECT              = 110
 }
-
-const INTERNET_INVALID_STATUS_CALLBACK
-  = cast(INTERNET_STATUS_CALLBACK) -1;
 
 enum {
 	FTP_TRANSFER_TYPE_UNKNOWN = 0,
@@ -618,8 +617,12 @@ enum {
 	INTERNET_CACHE_GROUP_REMOVE = 1
 }
 
-alias HANDLE HINTERNET;
-alias HANDLE* LPHINTERNET;
+mixin DECLARE_HANDLE!("HINTERNET"); // doesn't work - bug
+/*struct HINTERNET {
+	HANDLE h;
+	alias h this;
+}*/
+alias HINTERNET* LPHINTERNET;
 
 alias LONGLONG GROUPID;
 alias WORD INTERNET_PORT;
@@ -720,6 +723,9 @@ alias INTERNET_CERTIFICATE_INFO* LPINTERNET_CERTIFICATE_INFO;
 extern (Windows) alias void function(HINTERNET, DWORD, DWORD, PVOID, DWORD)
   INTERNET_STATUS_CALLBACK;
 alias INTERNET_STATUS_CALLBACK* LPINTERNET_STATUS_CALLBACK;
+
+const INTERNET_INVALID_STATUS_CALLBACK
+  = cast(INTERNET_STATUS_CALLBACK) -1;
 
 struct GOPHER_FIND_DATAA {
 	CHAR[MAX_GOPHER_DISPLAY_TEXT+1] DisplayString;
