@@ -61,11 +61,11 @@ public:
 
         // The accepted commands of the service.
         if (canStop) 
-            _controlsAccepted |= SERVICE_ACCEPT_STOP;
+            core.atomic.atomicOp!"|="(this._controlsAccepted, SERVICE_ACCEPT_STOP);
         if (canShutdown) 
-            _controlsAccepted |= SERVICE_ACCEPT_SHUTDOWN;
+             core.atomic.atomicOp!"|="(this._controlsAccepted, SERVICE_ACCEPT_STOP);
         if (canPauseContinue) 
-            _controlsAccepted |= SERVICE_ACCEPT_PAUSE_CONTINUE;
+             core.atomic.atomicOp!"|="(this._controlsAccepted, SERVICE_ACCEPT_STOP);
     }
 
     // Service object destructor. 
